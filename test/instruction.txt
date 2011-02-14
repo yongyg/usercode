@@ -1,0 +1,50 @@
+This analzyer is used to do selection as the same way as used in the online code and save useful information  for offline inter-calibration
+
+
+(1)Main Code:
+UserCode/yangyong/src/RecoAnalyzer.cc
+
+(2)Cfg file to run under
+UserCode/yangyong/test
+
+(3)Root-tree branches
+
+///Event information	     
+   Int_t           lumiBlock;
+   Int_t           runNumber;
+   Int_t           evtNumber;
+   Int_t           evtTime;
+
+//// L1 bits used  ( see cfg file runpizfromdata.py for a list of the L1 bits used)
+   Int_t           nL1Alca;
+   Int_t           L1Alca[21];   //[nL1Alca]
+
+/// invariant mass, pt , and eta , pt(minimal) of two photon candidates( 3x3 clusters) 
+   Float_t         mpair;
+   Float_t         ptpair;
+   Float_t         etapair;
+   Float_t         ptmin;
+///isolation variable for this pi0 candidate
+   Float_t         isolation;
+///S4/S9 (minimal ) of two photons
+   Float_t         s4s9min;
+///Number of Crystals in the first photon (3x3) 
+   Int_t           nxtClus1;
+///Energy of each crystal
+   Float_t         eXtalClus1[9];   //[nxtClus1]
+///Ieta index ( for barrel -85, ..., -1, 1, ...,  85]
+   Int_t           ietaXtalClus1[9];   //[nxtClus1]
+///Iphi index [ 1, ..., 360]
+   Int_t           iphiXtalClus1[9];   //[nxtClus1]
+//Timing of each crystal
+   Float_t         tXtalClus1[9];   //[nxtClus1]
+/// Number of Crystals in the 2nd photon (3x3) 
+   Int_t           nxtClus2;
+   Float_t         eXtalClus2[9];   //[nxtClus2]
+   Int_t           ietaXtalClus2[9];   //[nxtClus2]
+   Int_t           iphiXtalClus2[9];   //[nxtClus2]
+   Float_t         tXtalClus2[9];   //[nxtClus2]
+
+
+
+
