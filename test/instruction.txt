@@ -48,3 +48,11 @@ UserCode/yangyong/test
 
 
 
+///
+
+runpizfromdataReco_alCa.py is the code to run on top of RECO and run the regional unpacking ( like the RawToRecHit sequence before the AlCaFilter online) and run the AlcaFilter, 
+and run the root-tree makers. 
+
+This should be useful to optimize the selection cuts used online
+
+
