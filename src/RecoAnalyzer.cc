@@ -193,7 +193,7 @@ RecoAnalyzer::RecoAnalyzer(const edm::ParameterSet& iConfig){
     
     selePtGammaPi0EndCap_region3_ = iConfig.getParameter<double> ("selePtGammaPi0EndCap_region3");  
     selePtPi0EndCap_region3_ = iConfig.getParameter<double> ("selePtPi0EndCap_region3"); 
-        
+    selePtPi0MaxEndCap_region3_ = iConfig.getParameter<double> ("selePtPi0MaxEndCap_region3");
     
     seleS4S9GammaEndCap_ = iConfig.getParameter<double> ("seleS4S9GammaEndCap");  
     seleMinvMaxPi0EndCap_ = iConfig.getParameter<double> ("seleMinvMaxPi0EndCap");  
@@ -251,8 +251,9 @@ RecoAnalyzer::RecoAnalyzer(const edm::ParameterSet& iConfig){
     
     selePtGammaEtaEndCap_region3_ = iConfig.getParameter<double> ("selePtGammaEtaEndCap_region3");  
     selePtEtaEndCap_region3_ = iConfig.getParameter<double> ("selePtEtaEndCap_region3"); 
-        
+    selePtEtaMaxEndCap_region3_ = iConfig.getParameter<double> ("selePtEtaMaxEndCap_region3"); 
     
+
     seleS4S9GammaEtaEndCap_ = iConfig.getParameter<double> ("seleS4S9GammaEtaEndCap");  
     seleS9S25GammaEtaEndCap_ = iConfig.getParameter<double> ("seleS9S25GammaEtaEndCap");  
     
@@ -880,7 +881,7 @@ RecoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     }catch(std::exception& ex ){
       nErrorPrinted++;
-      if(nErrorPrinted< maxErrorToPrint) cout<<"encapRecHitsEta NA.."<<endl;
+      if(nErrorPrinted< maxErrorToPrint) cout<<"encapRecHitsPi0 NA.."<<endl;
     }
   }
 
@@ -2000,6 +2001,8 @@ void RecoAnalyzer::doSelectionAndFillTree(const edm::Event &evt, const edm::Even
   double ptpairCut_endcap_region1 = 0 ;
   double ptpairCut_endcap_region2 = 0 ;
   double ptpairCut_endcap_region3 = 0 ;
+  double ptpairMaxCut_endcap_region3 = 0 ;
+
 
   double eta_endcap_region1 = 0 ;
   double eta_endcap_region2 = 0 ;
@@ -2016,7 +2019,9 @@ void RecoAnalyzer::doSelectionAndFillTree(const edm::Event &evt, const edm::Even
       ptpairCut_endcap_region1 = selePtPi0EndCap_region1_;
       ptpairCut_endcap_region2 = selePtPi0EndCap_region2_;
       ptpairCut_endcap_region3 = selePtPi0EndCap_region3_;
-            
+      ptpairMaxCut_endcap_region3 = selePtPi0MaxEndCap_region3_;
+
+
       eta_endcap_region1 = region1_Pi0EndCap_; 
       eta_endcap_region2 = region2_Pi0EndCap_; 
       
@@ -2029,7 +2034,8 @@ void RecoAnalyzer::doSelectionAndFillTree(const edm::Event &evt, const edm::Even
       ptpairCut_endcap_region1 = selePtEtaEndCap_region1_;
       ptpairCut_endcap_region2 = selePtEtaEndCap_region2_;
       ptpairCut_endcap_region3 = selePtEtaEndCap_region3_;
-      
+      ptpairMaxCut_endcap_region3 = selePtEtaMaxEndCap_region3_;
+
       eta_endcap_region1 = region1_EtaEndCap_; 
       eta_endcap_region2 = region2_EtaEndCap_; 
       
@@ -2166,6 +2172,7 @@ void RecoAnalyzer::doSelectionAndFillTree(const edm::Event &evt, const edm::Even
 	  if(ptmin < ptminCut_endcap_region2 || ptpair < ptpairCut_endcap_region2) continue; 
 	}else{
 	  if(ptmin < ptminCut_endcap_region3 || ptpair < ptpairCut_endcap_region3) continue; 
+	  if( ptpair > ptpairMaxCut_endcap_region3 ) continue; 
 	}
       }else{
 	
@@ -2173,7 +2180,7 @@ void RecoAnalyzer::doSelectionAndFillTree(const edm::Event &evt, const edm::Even
 	
       }
       
-
+      
       mpair = sqrt ( (eClus[i] + eClus[j])*(eClus[i] + eClus[j]) - (p0x+p1x)*(p0x+p1x) - (p0y+p1y)*(p0y+p1y) - (p0z+p1z)*(p0z+p1z) );  
 
       

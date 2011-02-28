@@ -519,6 +519,8 @@ class RecoAnalyzer : public edm::EDAnalyzer {
       double selePtPi0EndCap_region2_;
       double selePtGammaPi0EndCap_region3_; 
       double selePtPi0EndCap_region3_;
+      double selePtPi0MaxEndCap_region3_;
+
       double seleMinvMaxPi0EndCap_;
       double seleMinvMinPi0EndCap_;
       double seleS4S9GammaEndCap_;
@@ -563,6 +565,8 @@ class RecoAnalyzer : public edm::EDAnalyzer {
       double selePtEtaEndCap_region2_;
       double selePtGammaEtaEndCap_region3_; 
       double selePtEtaEndCap_region3_;
+      double selePtEtaMaxEndCap_region3_;
+
       double seleMinvMaxEtaEndCap_;
       double seleMinvMinEtaEndCap_;
       double ptMinForIsolationEtaEndCap_;
