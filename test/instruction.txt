@@ -56,3 +56,10 @@ and run the root-tree makers.
 This should be useful to optimize the selection cuts used online
 
 
+RelVal_HLT2_GRun_STARTUP.py for estimating the event size 
+
+cmsRun RelVal_HLT2_GRun_STARTUP.py 
+
+ls *dat -l
+
+one need to subtract 1489902 ( which is the size when 0 events selected)
