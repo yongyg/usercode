@@ -1,0 +1,34 @@
+
+
+root version to use  (for consistency with the version of root of regression training )
+/afs/cern.ch/sw/lcg/app/releases/ROOT/5.28.00/slc4_amd64_gcc34/root/bin/root
+
+run on dielectronSkimmed data ( at least two electrons Et > 25)   from here
+/castor/cern.ch/user/y/yangyong/data/Run2011A/HiggsAnalysis/dielectronSkimmed/
+
+e.g.
+root -b
+L testSelectionZee.C+()
+testSelectionZee("DoubleElectronRun2011A-ZElectron-05Jul2011ReReco-ECAL-v1RAW-RECO",1)
+
+two arguments : one is the dataset name , and the other means to run over kth file (1,2,3,...)
+
+the code is quite simple, it run the WP80 selection and fill some histograms,etc
+
+you can count the number of files for each dataset 
+
+Right now
+For DATA:
+DoubleElectronRun2011A-ZElectron-05Jul2011ReReco-ECAL-v1RAW-RECO
+rmax = 21 
+DoubleElectronRun2011A-05Aug2011-v1AOD
+rmax = 24
+DoubleElectronRun2011A-PromptReco-v6AOD
+rmax = 20
+
+MC:
+DYToEE_M-20_CT10_TuneZ2_7TeV-powheg-pythiaSummer11-PU_S4_START42_V11-v1AODSIM
+rmax = 38
+
+
+
