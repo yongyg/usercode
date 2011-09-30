@@ -59,8 +59,9 @@ void testSelectionZee(char *test_datasetname, int test_evtRange){
     
   fChain  =new TChain("Analysis");
   TString filename ; 
-  filename = TString( Form("Data/dielectronSkimmed/testAnalysisZee.%s.%s.preseldieleEt25.r%d.root",dataversion.c_str(),datasetname.c_str(),evtRange));
-    
+
+  /// those files are preselected with two electron Et > 25GeV
+  filename = TString( Form("/castor/cern.ch/user/y/yangyong/data/Run2011A/HiggsAnalysis/dielectronSkimmed/testAnalysisZee.%s.%s.allconv1.vtxmethod2.presel5.vtxtmva0.r%d.root",dataversion.c_str(),datasetname.c_str(),evtRange));
   cout<<filename<<endl;
   fChain->Add(filename);
   
