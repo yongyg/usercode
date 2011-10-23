@@ -55,7 +55,6 @@ void testSelectionZee(char *test_datasetname, int test_evtRange){
   
   
   egammaMVACorrection_LoadWeights();
-  loadecalGapCoordinates();
     
   fChain  =new TChain("Analysis");
   TString filename ; 
@@ -192,14 +191,18 @@ void testSelectionZee(char *test_datasetname, int test_evtRange){
   
   int nsel = 0; 
   
-  
+  bool firstEvent = true; 
 
   ////loop over all events ( di-photon skimmed)
   for(entry = 0; entry < totalEntries; entry ++){
     fChain->GetEntry(entry);
     if(entry % 1000 ==0 ) cout<<" entry " <<entry<<endl; 
     
-    
+    if( firstEvent){
+      loadecalGapCoordinates();
+      firstEvent = false; 
+    }
+
     ///JSON file good run and LS
     if( isRealData ){
       vector<int>::iterator it = find(goodRunList.begin(),goodRunList.end(),runNumber); 
