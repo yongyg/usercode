@@ -13,7 +13,7 @@
 //
 // Original Author:  Yong Yang
 //         Created:  Wed Nov 23 09:31:00 CST 2011
-// $Id: EgammaMVAEnergyCorrector.cc,v 1.3 2012/01/18 09:46:24 yangyong Exp $
+// $Id: EgammaMVAEnergyCorrector.cc,v 1.4 2012/01/18 14:11:30 yangyong Exp $
 //
 //
 
@@ -21,7 +21,6 @@
 
 void EgammaMVAEnergyCorrector::Initialize(const edm::EventSetup &iSetup, vector<std::string> regweights){
   
-  cout<<" EgammaMVAEnergyCorrector::Initialize " <<endl; 
   
   fIsInitialized = kTRUE;
   PhotonFix::initialiseGeometry(iSetup);
@@ -86,13 +85,9 @@ void EgammaMVAEnergyCorrector::Initialize(const edm::EventSetup &iSetup, vector<
     reader_eeErr->AddVariable(eevarname[j],&fVals[j]);
   }
   reader_eeErr->AddVariable("escregcorr/(escraw+eps)",&fVals[20]);
-  cout<<" reader_eb->BookMVA " <<endl;
   reader_eb->BookMVA(methodName,regweights[0].c_str());
-  cout<<" reader_ebErr->BookMVA " <<endl;
   reader_ebErr->BookMVA(methodName,regweights[1].c_str());
-  cout<<" reader_ee->BookMVA " <<endl;
   reader_ee->BookMVA(methodName,regweights[2].c_str());
-  cout<<" reader_eeErr->BookMVA " <<endl;
   reader_eeErr->BookMVA(methodName,regweights[3].c_str());
   
 }
@@ -211,18 +206,7 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
   }
   ecorr = eraw * corr; 
   ecorrErr = ecorr * corrErr * varscale; ///error is trained to |escregcorr-etrue|/escregcorr
-
-
-  if( fabs( ecorr - 57.9392)<0.0001){
-    for(int j=0;j<25; j++){
-      cout<<" fVals["<<j<<"] " << fVals[j]<<endl; 
-    }
-    cout<<"ecorr " << ecorr <<" "<< ecorrErr <<endl; 
-  }
   
-
-
-
   return std::pair<float,float>(ecorr,ecorrErr);
   
 }
