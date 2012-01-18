@@ -13,7 +13,7 @@
 //
 // Original Author:  Yong Yang
 //         Created:  Wed Nov 23 09:31:00 CST 2011
-// $Id: EgammaMVAEnergyCorrector.cc,v 1.2 2012/01/17 14:16:31 yangyong Exp $
+// $Id: EgammaMVAEnergyCorrector.cc,v 1.3 2012/01/18 09:46:24 yangyong Exp $
 //
 //
 
@@ -134,7 +134,7 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
     fVals[0]  = s.rawEnergy();
     fVals[1]  = s.eta();
     fVals[2]  = s.phi();
-    fVals[3]  = clustertools.e5x5(b) /s.rawEnergy();
+    fVals[3]  = p.e5x5() /s.rawEnergy();
     fVals[4]  = p.r9();
     fVals[5]  = clustertools.e2x5Left(b);
     fVals[6]  = clustertools.e2x5Right(b);
@@ -167,7 +167,7 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
     fVals[1]  = s.eta();
     fVals[2]  = s.phi();
     fVals[3]  = s.preshowerEnergy()/s.rawEnergy();
-    fVals[4]  = clustertools.e5x5(b)/s.rawEnergy();
+    fVals[4]  = p.e5x5() / s.rawEnergy(); 
     fVals[5]  = p.r9();
     fVals[6]  = clustertools.e2x5Left(b);
     fVals[7]  = clustertools.e2x5Right(b);
@@ -211,6 +211,18 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
   }
   ecorr = eraw * corr; 
   ecorrErr = ecorr * corrErr * varscale; ///error is trained to |escregcorr-etrue|/escregcorr
+
+
+  if( fabs( ecorr - 57.9392)<0.0001){
+    for(int j=0;j<25; j++){
+      cout<<" fVals["<<j<<"] " << fVals[j]<<endl; 
+    }
+    cout<<"ecorr " << ecorr <<" "<< ecorrErr <<endl; 
+  }
+  
+
+
+
   return std::pair<float,float>(ecorr,ecorrErr);
   
 }
@@ -230,7 +242,7 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
     fVals[0]  = s.rawEnergy();
     fVals[1]  = s.eta();
     fVals[2]  = s.phi();
-    fVals[3]  = clustertools.e5x5(b); 
+    fVals[3]  = e.e5x5();
     fVals[4]  = clustertools.e3x3(b); 
     fVals[5]  = clustertools.e2x5Left(b);
     fVals[6]  = clustertools.e2x5Right(b);
@@ -263,7 +275,7 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
     fVals[1]  = s.eta();
     fVals[2]  = s.phi();
     fVals[3]  = s.preshowerEnergy(); 
-    fVals[4]  = clustertools.e5x5(b);
+    fVals[4]  = e.e5x5();
     fVals[5]  = clustertools.e3x3(b);
     fVals[6]  = clustertools.e2x5Left(b);
     fVals[7]  = clustertools.e2x5Right(b);
