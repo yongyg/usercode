@@ -13,7 +13,7 @@
 //
 // Original Author:  Yong Yang
 //         Created:  Wed Nov 23 09:31:00 CST 2011
-// $Id$
+// $Id: EgammaMVAEnergyCorrector.cc,v 1.2 2012/01/17 14:16:31 yangyong Exp $
 //
 //
 
@@ -128,7 +128,7 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
   const SuperCluster &s = *p.superCluster();
   const BasicCluster &b = *s.seed();
   PhotonFix phfix(s.eta(),s.phi()); 
-  Bool_t isbarrel = (std::abs(s.eta())<1.48);
+  Bool_t isbarrel =  b.hitsAndFractions().at(0).first.subdetId()==EcalBarrel;
   
   if (isbarrel) {
     fVals[0]  = s.rawEnergy();
@@ -219,9 +219,12 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
 std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const GsfElectron &e, EcalClusterLazyTools &clustertools, int nvtx, float rho) {
   
   const SuperCluster &s = *e.superCluster();
+  ///for tracker-driven only, no correction
+  if (!e.ecalDrivenSeed()) return std::pair<double,double>(s.energy(),0);
+  
   const BasicCluster &b = *s.seed();
   PhotonFix phfix(s.eta(),s.phi()); 
-  Bool_t isbarrel = (std::abs(s.eta())<1.48);
+  Bool_t isbarrel =  b.hitsAndFractions().at(0).first.subdetId()==EcalBarrel;
   
   if (isbarrel) {
     fVals[0]  = s.rawEnergy();
