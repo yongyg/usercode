@@ -3,9 +3,9 @@
 /** \class EcalRecalibRecHitProducer
  *   produce ECAL rechits from uncalibrated rechits
  *
- *  $Id: EcalRecalibRecHitProducer.h,v 1.2 2008/12/10 02:20:30 ferriff Exp $
- *  $Date: 2008/12/10 02:20:30 $
- *  $Revision: 1.2 $
+ *  $Id: EcalRecalibRecHitProducer.h,v 1.1 2012/03/06 23:05:09 yangyong Exp $
+ *  $Date: 2012/03/06 23:05:09 $
+ *  $Revision: 1.1 $
  *  \author Federico Ferri, University of Milano Bicocca and INFN
  *
  **/
@@ -35,6 +35,7 @@ class EcalRecalibRecHitProducer : public edm::EDProducer {
                 bool doEnergyScale_;
                 bool doIntercalib_;
                 bool doLaserCorrections_;
+		bool doEnergyScaleInverse_;
 		bool doIntercalibInverse_;
                 bool doLaserCorrectionsInverse_;
 		
