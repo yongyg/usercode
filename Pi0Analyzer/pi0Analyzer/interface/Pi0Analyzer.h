@@ -1360,5 +1360,8 @@ class Pi0Analyzer : public edm::EDAnalyzer {
 
       int isRealData;
 
+      int nSeedsEB;
+      int nSeedsEE;
+      
       
 };

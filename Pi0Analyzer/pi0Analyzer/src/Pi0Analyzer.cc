@@ -939,14 +939,6 @@ Pi0Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   if(debug_ >=1) {
     cout<<" checking L1.."<<endl;
   }
-  
-  // get L1GlobalTriggerReadoutRecord
-  if( usegtDigis_){
-    edm::Handle<L1GlobalTriggerReadoutRecord> gtReadoutRecord;
-    iEvent.getByLabel(m_l1GtRecordInputTag, gtReadoutRecord);
-        
-  }
-
 
   
   m_l1GtUtils.retrieveL1EventSetup(iSetup);
@@ -1002,18 +994,45 @@ Pi0Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   edm::ESHandle<L1GtTriggerMenu> menuRcd;
   iSetup.get<L1GtTriggerMenuRcd>().get(menuRcd) ;
+  const L1GtTriggerMenu* menu = menuRcd.product();
   l1bitFired->clear();
-  for(unsigned int j=0; j< l1algoName->size(); j++){
-    string m_nameAlgTechTrig = l1algoName->at(j);
-    bool decisionBeforeMaskAlgTechTrig = m_l1GtUtils.decisionBeforeMask(iEvent, m_nameAlgTechTrig, iErrorCode);
-    if (iErrorCode == 0) {
-      if(decisionBeforeMaskAlgTechTrig){
-	l1bitFired->push_back(j);
+
+  if( !usegtDigis_){
+    for(unsigned int j=0; j< l1algoName->size(); j++){
+      string m_nameAlgTechTrig = l1algoName->at(j);
+      bool decisionBeforeMaskAlgTechTrig = m_l1GtUtils.decisionBeforeMask(iEvent, m_nameAlgTechTrig, iErrorCode);
+      if (iErrorCode == 0) {
+	if(decisionBeforeMaskAlgTechTrig){
+	  l1bitFired->push_back(j);
+	}
+      }else if (iErrorCode == 1) {
+      }else {
       }
-    }else if (iErrorCode == 1) {
-    }else {
     }
   }
+  // get L1GlobalTriggerReadoutRecord
+  if( usegtDigis_){
+    
+    // get L1GlobalTriggerReadoutRecord and GT decision                                                                                                                         
+    edm::Handle<L1GlobalTriggerReadoutRecord> gtReadoutRecord;
+    iEvent.getByLabel(m_l1GtRecordInputTag, gtReadoutRecord);
+    
+    const  DecisionWord& gtDecisionWordBeforeMask = gtReadoutRecord->decisionWord();
+    // test if the algorithm name is in the menu
+    const AlgorithmMap& algorithmMap = menu->gtAlgorithmMap();
+    for(unsigned int j=0; j< l1algoName->size(); j++){
+      string m_nameAlgTechTrig = l1algoName->at(j);
+      CItAlgo itAlgo = algorithmMap.find(m_nameAlgTechTrig);
+      if (itAlgo != algorithmMap.end()) {
+	bool l1decision = menu->gtAlgorithmResult(m_nameAlgTechTrig, gtDecisionWordBeforeMask);
+	if( l1decision ){
+	  l1bitFired->push_back(j);
+	}
+      }
+    }
+  }
+  
+
   
   
   if(debug_>=2) cout<<"l1nfired/nalgo " << l1bitFired->size()<<"/"<<l1algoName->size()<<endl;
@@ -1148,6 +1167,7 @@ void Pi0Analyzer::beginJob()
   if( saveAllPhotonBarrel_  || saveAllPhotonEndcap_){
     mytree_clusters = new TTree("clusters","clusters of each event");
     
+    mytree_clusters->Branch("isRealData",&isRealData,"isRealData/I");    
     mytree_clusters->Branch("lumiBlock",&lumiBlock,"lumiBlock/I");
     mytree_clusters->Branch("runNumber",&runNumber,"runNumber/I");
     mytree_clusters->Branch("evtNumber",&evtNumber,"evtNumber/I");
@@ -2432,6 +2452,12 @@ void Pi0Analyzer::makeNxNClusters(const edm::Event &evt, const edm::EventSetup &
     double energy = itt->energy();
     if( ! checkStatusOfEcalRecHit(channelStatus, *itt) ) continue; 
     if (energy > clusterSeedThreshold ) seeds.push_back(*itt);
+  }
+  
+  if (detector == reco::CaloID::DET_ECAL_BARREL){
+    nSeedsEB = int(seeds.size());
+  }else{
+    nSeedsEE = int(seeds.size());
   }
   
   
