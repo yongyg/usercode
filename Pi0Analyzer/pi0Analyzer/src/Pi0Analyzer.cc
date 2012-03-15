@@ -1189,11 +1189,16 @@ void Pi0Analyzer::beginJob()
     mytree_clusters->Branch("vertexisFake",vertexisFake,"vertexisFake[nVertex]/I");
     mytree_clusters->Branch("vertexisValid",vertexisValid,"vertexisValid[nVertex]/I");
     
+    mytree_clusters->Branch("nSeedsEB",&nSeedsEB,"nSeedsEB/I");
+    mytree_clusters->Branch("nSeedsEE",&nSeedsEE,"nSeedsEE/I");
+        
     ///clusters
     if( saveAllPhotonBarrel_){
       
+      
       mytree_clusters->Branch("n3x3ClusEB",&n3x3ClusEB,"n3x3ClusEB/I");
       mytree_clusters->Branch("e3x3ClusEB",e3x3ClusEB,"e3x3ClusEB[n3x3ClusEB]/F");
+      
       mytree_clusters->Branch("x3x3ClusEB",x3x3ClusEB,"x3x3ClusEB[n3x3ClusEB]/F");
       mytree_clusters->Branch("y3x3ClusEB",y3x3ClusEB,"y3x3ClusEB[n3x3ClusEB]/F");
       mytree_clusters->Branch("z3x3ClusEB",z3x3ClusEB,"z3x3ClusEB[n3x3ClusEB]/F");
