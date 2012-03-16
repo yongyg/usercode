@@ -1,0 +1,51 @@
+void setBranchAddress(){
+
+  fChain->SetBranchAddress("isRealData", &isRealData);
+  fChain->SetBranchAddress("lumiBlock", &lumiBlock);
+  fChain->SetBranchAddress("runNumber", &runNumber);
+  fChain->SetBranchAddress("evtNumber", &evtNumber);
+  fChain->SetBranchAddress("evtTime", &evtTime);
+  fChain->SetBranchAddress("bunchX", &bunchX);
+  fChain->SetBranchAddress("orbitNumber", &orbitNumber);
+  fChain->SetBranchAddress("vBeamSpot", vBeamSpot);
+  fChain->SetBranchAddress("l1bitFired", &l1bitFired);
+  fChain->SetBranchAddress("l1algoName", &l1algoName);
+  fChain->SetBranchAddress("hlt_bitFired", &hlt_bitFired);
+  fChain->SetBranchAddress("hlt_pathName", &hlt_pathName);
+  fChain->SetBranchAddress("nVertex", &nVertex);
+  fChain->SetBranchAddress("vertexx", &vertexx);
+  fChain->SetBranchAddress("vertexy", &vertexy);
+  fChain->SetBranchAddress("vertexz", &vertexz);
+  fChain->SetBranchAddress("vertexndof", &vertexndof);
+  fChain->SetBranchAddress("vertexisFake", &vertexisFake);
+  fChain->SetBranchAddress("vertexisValid", &vertexisValid);
+  fChain->SetBranchAddress("nSeedsEB", &nSeedsEB);
+  fChain->SetBranchAddress("nSeedsEE", &nSeedsEE);
+  fChain->SetBranchAddress("n3x3ClusEB", &n3x3ClusEB);
+  fChain->SetBranchAddress("e3x3ClusEB", e3x3ClusEB);
+  fChain->SetBranchAddress("x3x3ClusEB", x3x3ClusEB);
+  fChain->SetBranchAddress("y3x3ClusEB", y3x3ClusEB);
+  fChain->SetBranchAddress("z3x3ClusEB", z3x3ClusEB);
+  fChain->SetBranchAddress("nXt3x3ClusEB", nXt3x3ClusEB);
+  fChain->SetBranchAddress("eXt3x3ClusEB", eXt3x3ClusEB);
+  fChain->SetBranchAddress("tXt3x3ClusEB", tXt3x3ClusEB);
+  fChain->SetBranchAddress("ietaXt3x3ClusEB", ietaXt3x3ClusEB);
+  fChain->SetBranchAddress("iphiXt3x3ClusEB", iphiXt3x3ClusEB);
+  fChain->SetBranchAddress("laserCorr3x3ClusEB", laserCorr3x3ClusEB);
+  fChain->SetBranchAddress("s4s93x3ClusEB", s4s93x3ClusEB);
+  fChain->SetBranchAddress("s9s253x3ClusEB", s9s253x3ClusEB);
+  fChain->SetBranchAddress("n3x3ClusEE", &n3x3ClusEE);
+  fChain->SetBranchAddress("e3x3ClusEE", e3x3ClusEE);
+  fChain->SetBranchAddress("x3x3ClusEE", x3x3ClusEE);
+  fChain->SetBranchAddress("y3x3ClusEE", y3x3ClusEE);
+  fChain->SetBranchAddress("z3x3ClusEE", z3x3ClusEE);
+  fChain->SetBranchAddress("nXt3x3ClusEE", nXt3x3ClusEE);
+  fChain->SetBranchAddress("eXt3x3ClusEE", eXt3x3ClusEE);
+  fChain->SetBranchAddress("tXt3x3ClusEE", tXt3x3ClusEE);
+  fChain->SetBranchAddress("ixXt3x3ClusEE", ixXt3x3ClusEE);
+  fChain->SetBranchAddress("iyXt3x3ClusEE", iyXt3x3ClusEE);
+  fChain->SetBranchAddress("laserCorr3x3ClusEE", laserCorr3x3ClusEE);
+  fChain->SetBranchAddress("s4s93x3ClusEE", s4s93x3ClusEE);
+  fChain->SetBranchAddress("s9s253x3ClusEE", s9s253x3ClusEE);
+  
+}
