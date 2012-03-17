@@ -11,7 +11,7 @@ TChain *fChain;
 
 #include "loadl1seeds.cc"
 
-void testSelection(){
+void testSelection(int run){
   
   l1bitFired_prescale1 = new vector<unsigned short> ; 
   l1bitFired_prescale2 = new vector<unsigned short> ; 
@@ -23,8 +23,14 @@ void testSelection(){
   //fChain->Add("/uscms/home/marat/lpcegm/trypiz520/CMSSW_5_2_0/src/test/178160/crab_0_120315_013419/res/pizeta_6_1_l4k.root");
   //fChain->Add("/uscms/home/marat/lpcegm/trypiz520/CMSSW_5_2_0/src/test/178160/crab_0_120315_013419/res/pizeta_*.root");
   //fChain->Add("test.root");
-  fChain->Add("crab_jobs/178160/crab_0_120315_124856/res/*root");
-
+  if( run = 178160){
+    fChain->Add("crab_jobs/178160/crab_0_120315_124856/res/*root");
+  }
+  if( run = 179808){
+    fChain->Add("/uscmst1b_scratch/lpc1/lpceg/marat/zbias_out/zbias_run179808_hpf0.root");
+  }
+  
+  
   vector<string> certfiles;
   certfiles.push_back("Cert_160404-180252_7TeV_All2011_Nov30ReReco_v1.txtv1");
   getLSrangeofEachRuns(certfiles);
@@ -34,10 +40,10 @@ void testSelection(){
   
 
   
-  TString filename = TString("testSelection.root");
+  TString filename = TString(Form("testSelection.run%d.root",run));
   TFile *fnew = new TFile(filename,"recreate");
-
-  filename = TString("testSelection.txt");
+  
+  filename = TString(Form("testSelection.run%d.txt",run));
   ofstream txtout(filename,ios::out);
      
   TH1F *hh_mpair_ebpiz = new TH1F("hh_mpair_ebpiz", "hh_mpair_ebpiz", 200,0,1);
@@ -119,10 +125,17 @@ void testSelection(){
 
   
   int nL1bitsfiredAlca[200] = {0};
-
   int nL1bitsfiredAlcaps1[200] = {0};
   int nL1bitsfiredAlcaps2[200] = {0};
-  int nL1bitsfiredAlcaps3[200] = {0};
+
+  int nL1bitsfiredAlca_passSelpizEB[200] = {0};
+  int nL1bitsfiredAlca_passSelpizEE[200] = {0};
+  int nL1bitsfiredAlca_passSeletaEB[200] = {0};
+  int nL1bitsfiredAlca_passSeletaEE[200] = {0};
+  
+  
+
+
   
   bool goodCurLumiBlock = false; 
   int curLumiBlock = -1; 
@@ -258,9 +271,21 @@ void testSelection(){
     bool passPi0EE = ( !toomanyEE &&  passMassPi0EE);
     if( passPi0EB){
       npizEB ++; 
+
+      for(int n=0; n< nL1alca; n++){
+	if(isL1AlcaFired[n]==1){
+	  nL1bitsfiredAlca_passSelpizEB[n]++;
+	}
+      }
+      
     }
     if( passPi0EE){
       npizEE ++; 
+      for(int n=0; n< nL1alca; n++){
+	if(isL1AlcaFired[n]==1){
+	  nL1bitsfiredAlca_passSelpizEE[n]++;
+	}
+      }
     }
     bool passMassEtaEB = false; 
     vector<float> metaseleb = selection_EB_eta();
@@ -297,9 +322,19 @@ void testSelection(){
     
     if( passEtaEB){
       netaEB ++; 
+      for(int n=0; n< nL1alca; n++){
+	if( isL1AlcaFired[n]){
+	  nL1bitsfiredAlca_passSeletaEB[n]++;
+	}
+      }
     }
     if( passEtaEE){
       netaEE ++; 
+      for(int n=0; n< nL1alca; n++){
+	if( isL1AlcaFired[n]){
+	  nL1bitsfiredAlca_passSeletaEE[n]++;
+	}
+      }
     }
     
     if( passPi0EB){
@@ -348,13 +383,26 @@ void testSelection(){
   
   for(int n=0; n< nL1alca; n++){
     string l1name = alcaPi0UsedL1[n];
-    txtout<<l1name.c_str()<<" " << nL1bitsfiredAlca[n]<<endl; 
+    txtout<<l1name.c_str()<<" " << nL1bitsfiredAlca[n]<<" "<< nL1bitsfiredAlcaps1[n]<<" "<< nL1bitsfiredAlcaps2[n]<<endl; 
+    if( nL1bitsfiredAlca[n]>0){
+      
+      float effperL1_pizeb = 1.0* nL1bitsfiredAlca_passSelpizEB[n]/ nL1bitsfiredAlca[n];
+      float effperL1_pizebErr = sqrt( effperL1_pizeb *(1-effperL1_pizeb)/nL1bitsfiredAlca[n]);
+      float effperL1_pizee = 1.0* nL1bitsfiredAlca_passSelpizEE[n]/ nL1bitsfiredAlca[n];
+      float effperL1_pizeeErr = sqrt( effperL1_pizee *(1-effperL1_pizee)/nL1bitsfiredAlca[n]);
+      float effperL1_etaeb = 1.0 * nL1bitsfiredAlca_passSeletaEB[n]/ nL1bitsfiredAlca[n];
+      float effperL1_etaebErr = sqrt( effperL1_pizeb *(1-effperL1_etaeb)/nL1bitsfiredAlca[n]);
+      float effperL1_etaee = 1.0 * nL1bitsfiredAlca_passSeletaEE[n]/ nL1bitsfiredAlca[n];
+      float effperL1_etaeeErr = sqrt( effperL1_pizeb *(1-effperL1_etaee)/nL1bitsfiredAlca[n]);
+      
+      txtout<<"efficiency_per_l1 " << l1name.c_str() <<" pizeb "<< effperL1_pizeb<<"+/-"<<effperL1_pizebErr<<" pizee "<< effperL1_pizee<<"+/-"<<effperL1_pizeeErr <<" etaeb " << effperL1_etaeb<<"+/-"<<effperL1_etaebErr<<" etaee " << effperL1_etaee<<"+/-"<<effperL1_etaeeErr<<endl; 
+    }
   }
-
-
-  txtout<<"npizSel "<< npizSel <<" "<< npizEB <<" "<< npizEE <<" "<< netaSel <<" "<< netaEB <<" "<< netaEE <<endl; 
   
-     
+
+  txtout<<"npizSeleb/ee "<<" "<< npizEB <<" "<< npizEE <<" netaSeleb/ee " <<" "<< netaEB <<" "<< netaEE <<endl; 
+  
+  
   for(int j=0; j<3; j++){
     txtout<<"nL1Selected" << j<<" "<< nL1Selected[j]<<" nL1AlcaSelected "<<  nL1AlcaSelected[j]<<endl; 
   }
