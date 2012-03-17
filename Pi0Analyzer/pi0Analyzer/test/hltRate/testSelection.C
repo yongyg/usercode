@@ -23,11 +23,8 @@ void testSelection(int run){
   //fChain->Add("/uscms/home/marat/lpcegm/trypiz520/CMSSW_5_2_0/src/test/178160/crab_0_120315_013419/res/pizeta_6_1_l4k.root");
   //fChain->Add("/uscms/home/marat/lpcegm/trypiz520/CMSSW_5_2_0/src/test/178160/crab_0_120315_013419/res/pizeta_*.root");
   //fChain->Add("test.root");
-  if( run = 178160){
+  if( run == 178160){
     fChain->Add("crab_jobs/178160/crab_0_120315_124856/res/*root");
-  }
-  if( run = 179808){
-    fChain->Add("/uscmst1b_scratch/lpc1/lpceg/marat/zbias_out/zbias_run179808_hpf0.root");
   }
   
   
