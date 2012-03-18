@@ -1,9 +1,18 @@
 #include "rootheader.h"
+#include "roofitheader.h"
+
 #include "Pi0Analyzer.h"
 
 TChain *fChain; 
 
 #include "setBranchAddress.cc"
+
+int evtRange;
+
+//#include "datachain.cc"
+#include "datachain.cc"
+
+
 #include "getGoodLS.cc"
 
 #include "physUtils.cc"
@@ -11,71 +20,106 @@ TChain *fChain;
 
 #include "loadl1seeds.cc"
 
-void testSelection(int run){
+#include "roodatasetth1.cc"
+
+
+
+void testSelection(char *dataset,int test_evtRange){
+  evtRange = test_evtRange; 
+  
   
   l1bitFired_prescale1 = new vector<unsigned short> ; 
   l1bitFired_prescale2 = new vector<unsigned short> ; 
   l1bitFired_prescale3 = new vector<unsigned short> ; 
+
+  map<int,double> instantLum_run; 
+
+  instantLum_run[178160] = 31.733/(483) *1./23.31 *1E36;
+  
+
+//   if( instantLum_run[run] == 0){
+//     cout<<"warning! no instatenous lumi is given. " << run <<endl; 
+//     instantLum_run[run] = 3E33; //some dummy value
+//     //return; 
+//   }
   
   
   fChain = new TChain("clusters");
+  
+  TString filename; 
 
-  //fChain->Add("/uscms/home/marat/lpcegm/trypiz520/CMSSW_5_2_0/src/test/178160/crab_0_120315_013419/res/pizeta_6_1_l4k.root");
-  //fChain->Add("/uscms/home/marat/lpcegm/trypiz520/CMSSW_5_2_0/src/test/178160/crab_0_120315_013419/res/pizeta_*.root");
-  //fChain->Add("test.root");
-  if( run == 178160){
-    fChain->Add("crab_jobs/178160/crab_0_120315_124856/res/*root");
-  }
+  ///filename = TString("/mnt/hadoop/user/yangyong/data/pizdata_rerun2012L1menu_2010b/") + TString(Form("%d",run)) + TString(Form("/clusters_%s_*.root",dataset));
+  //cout<<filename<<endl; 
+  //fChain->Add(filename);
+  
+  //  datachain(run);
+
+  datachain();
   
   
   vector<string> certfiles;
-  certfiles.push_back("Cert_160404-180252_7TeV_All2011_Nov30ReReco_v1.txtv1");
+  certfiles.push_back("/afs/cern.ch/cms/cit/yongy/data/JSON/Cert_160404-180252_7TeV_All2011_Nov30ReReco_v1.txtv1");
   getLSrangeofEachRuns(certfiles);
-    
+  
   
   setBranchAddress();
   
-
   
-  TString filename = TString(Form("testSelection.run%d.root",run));
+  
+  filename = TString(Form("testSelection.%s.r%d.root",dataset,evtRange));
   TFile *fnew = new TFile(filename,"recreate");
   
-  filename = TString(Form("testSelection.run%d.txt",run));
+  filename = TString(Form("testSelection.%s.r%d.txt",dataset,evtRange));
   ofstream txtout(filename,ios::out);
      
-  TH1F *hh_mpair_ebpiz = new TH1F("hh_mpair_ebpiz", "hh_mpair_ebpiz", 200,0,1);
-  TH1F *hh_mpair_ebeta = new TH1F("hh_mpair_ebeta", "hh_mpair_ebeta", 200,0,1);
-  TH1F *hh_mpair_eepiz = new TH1F("hh_mpair_eepiz", "hh_mpair_eepiz", 200,0,1);
-  TH1F *hh_mpair_eeeta = new TH1F("hh_mpair_eeeta", "hh_mpair_eeeta", 200,0,1);
-    
-  TH1F *hh_mpair_ebpiz_L1alca[200] ;
-  TH1F *hh_mpair_ebeta_L1alca[200] ;
-  for(int j=0; j< 200; j++){
-    TString histname = TString (Form("hh_mpair_ebpiz_L1alca%d",j));
-    hh_mpair_ebpiz_L1alca[j] = new TH1F(histname,histname,200,0,1);
-    histname = TString (Form("hh_mpair_ebeta_L1alca_%d",j));
-    hh_mpair_ebeta_L1alca[j] = new TH1F(histname,histname,200,0,1);
+//   TH1F *hh_mpair_ebpiz = new TH1F("hh_mpair_ebpiz", "hh_mpair_ebpiz", 200,0,1);
+//   TH1F *hh_mpair_ebeta = new TH1F("hh_mpair_ebeta", "hh_mpair_ebeta", 200,0,1);
+//   TH1F *hh_mpair_eepiz = new TH1F("hh_mpair_eepiz", "hh_mpair_eepiz", 200,0,1);
+//   TH1F *hh_mpair_eeeta = new TH1F("hh_mpair_eeeta", "hh_mpair_eeeta", 200,0,1);
+
+  
+
+  for(int j=0;j<3;j++){
+    string histname = string(Form("mpair_ebpiz_l1alcaps_%d",j));
+    makeTH1F(histname,200,0,1);
+    histname = string(Form("mpair_eepiz_l1alcaps_%d",j));
+    makeTH1F(histname,200,0,1);
+    histname = string(Form("mpair_ebeta_l1alcaps_%d",j));
+    makeTH1F(histname,200,0,1);
+    histname = string(Form("mpair_eeeta_l1alcaps_%d",j));
+    makeTH1F(histname,200,0,1);
   }
   
-  TH1F *hh_mpair_eepiz_L1alca[200] ;
-  TH1F *hh_mpair_eeeta_L1alca[200] ;
-  for(int j=0; j< 200; j++){
-    TString histname = TString (Form("hh_mpair_eepiz_L1alca%d",j));
-    hh_mpair_eepiz_L1alca[j] = new TH1F(histname,histname,200,0,1);
-    histname = TString (Form("hh_mpair_eeeta_L1alca_%d",j));
-    hh_mpair_eeeta_L1alca[j] = new TH1F(histname,histname,200,0,1);
-  }
-
-  TH1F *hh_nL1fired_alca = new TH1F("hh_nL1fired_alca","L1 bit fired",200,0,200);
-  TH1F *hh_nL1fired_alcaps1 = new TH1F("hh_nL1fired_alcaps1","L1 bit fired",200,0,200);
-  TH1F *hh_nL1fired_alcaps2 = new TH1F("hh_nL1fired_alcaps2","L1 bit fired",200,0,200);
-
-   
+  TH1F *hh_nalcaL1Selected = new TH1F("hh_nalcaL1Selected","hh_nalcaL1Selected",10,0,10);
+  TH1F *hh_nalcaL1Selected_passebpiz = new TH1F("hh_nalcaL1Selected_passebpiz","hh_nalcaL1Selected_passebpiz",10,0,10);
+  TH1F *hh_nalcaL1Selected_passeepiz = new TH1F("hh_nalcaL1Selected_passeepiz","hh_nalcaL1Selected_passeepiz",10,0,10);
+  TH1F *hh_nalcaL1Selected_passebeta = new TH1F("hh_nalcaL1Selected_passebeta","hh_nalcaL1Selected_passebeta",10,0,10);
+  TH1F *hh_nalcaL1Selected_passeeeta = new TH1F("hh_nalcaL1Selected_passeeeta","hh_nalcaL1Selected_passeeeta",10,0,10);
+  TH1F *hh_nalcaL1Selected_passall = new TH1F("hh_nalcaL1Selected_passall","hh_nalcaL1Selected_passall",10,0,10);
+  
+  
+  
+  TH1F *hh_nL1fired = new TH1F("hh_nL1fired","L1 bit fired",200,0,200);
+  TH1F *hh_nL1firedps1 = new TH1F("hh_nL1firedps1","L1 bit fired",200,0,200);
+  TH1F *hh_nL1firedps2 = new TH1F("hh_nL1firedps2","L1 bit fired",200,0,200);
+  
+  TH1F *hh_nL1fired_passpizeb = new TH1F("hh_nL1fired_passpizeb","L1 bit fired && pizeb",200,0,200);
+  TH1F *hh_nL1fired_passpizee = new TH1F("hh_nL1fired_passpizee","L1 bit fired && pizee",200,0,200);
+  TH1F *hh_nL1fired_passetaeb = new TH1F("hh_nL1fired_passetaeb","L1 bit fired && etaeb",200,0,200);
+  TH1F *hh_nL1fired_passetaee = new TH1F("hh_nL1fired_passetaee","L1 bit fired && etaee",200,0,200);
+    
+  TH1F *hh_nL1firedAlca = new TH1F("hh_nL1firedAlca","L1 bit fired",200,0,200);
+  TH1F *hh_nL1firedAlca_passpizeb = new TH1F("hh_nL1firedAlca_passpizeb","L1 bit fired && pizeb",200,0,200);
+  TH1F *hh_nL1firedAlca_passpizee = new TH1F("hh_nL1firedAlca_passpizee","L1 bit fired && pizee",200,0,200);
+  TH1F *hh_nL1firedAlca_passetaeb = new TH1F("hh_nL1firedAlca_passetaeb","L1 bit fired && etaeb",200,0,200);
+  TH1F *hh_nL1firedAlca_passetaee = new TH1F("hh_nL1firedAlca_passetaee","L1 bit fired && etaee",200,0,200);
+  
+  
   int psAlcaPi0EB = 1; 
   int psAlcaEtaEB = 1; 
   int psAlcaPi0EE = 1;
   int psAlcaEtaEE = 1;
-    
+  
   
   
   string alcaPi0UsedL1[200] = {
@@ -111,7 +155,8 @@ void testSelection(int run){
   
   int nL1alca = 28;
   int isL1AlcaFired[200];
-
+  int isL1Fired[200];
+  
   int npizSel = 0; 
   int npizEB = 0; 
   int npizEE = 0; 
@@ -121,18 +166,30 @@ void testSelection(int run){
   int netaEE = 0; 
 
   
+  ///for all l1
+  int nL1bitsfired[200] = {0};
+  int nL1bitsfiredps1[200] = {0};
+  int nL1bitsfiredps2[200] = {0};
+  
+
+  ///only for alca
   int nL1bitsfiredAlca[200] = {0};
   int nL1bitsfiredAlcaps1[200] = {0};
   int nL1bitsfiredAlcaps2[200] = {0};
-
+  
   int nL1bitsfiredAlca_passSelpizEB[200] = {0};
   int nL1bitsfiredAlca_passSelpizEE[200] = {0};
   int nL1bitsfiredAlca_passSeletaEB[200] = {0};
   int nL1bitsfiredAlca_passSeletaEE[200] = {0};
   
   
-
-
+  int nL1bitsfired_passSelpizEB[200] = {0};
+  int nL1bitsfired_passSelpizEE[200] = {0};
+  int nL1bitsfired_passSeletaEB[200] = {0};
+  int nL1bitsfired_passSeletaEE[200] = {0};
+  
+  
+  
   
   bool goodCurLumiBlock = false; 
   int curLumiBlock = -1; 
@@ -144,6 +201,10 @@ void testSelection(int run){
 
   int nL1Selected[10] = {0};
   int nL1AlcaSelected[10] = {0};
+  int nL1AlcaSelected_passpizeb[10] = {0};
+  int nL1AlcaSelected_passpizee[10] = {0};
+  int nL1AlcaSelected_passetaeb[10] = {0};
+  int nL1AlcaSelected_passetaee[10] = {0};
   
   
   loadL1SeedsAndPrescale_5e33_7e33();
@@ -156,6 +217,23 @@ void testSelection(int run){
     
   for(int entry=0; entry< totalEntries; entry++){
     fChain->GetEntry(entry);
+
+    
+    ///define th1f
+    if(entry==0){
+      for(int j=0; j< int( l1algoName->size()); j++ ){
+	string l1 = l1algoName->at(j);
+	string histname = "mpair_pizeb_" +l1;	
+	makeTH1F(histname,200,0,1);
+	histname = "mpair_pizee_" +l1;
+	makeTH1F(histname,200,0,1);
+	histname = "mpair_etaeb_" +l1;
+	makeTH1F(histname,200,0,1);
+	histname = "mpair_etaee_" +l1;
+	makeTH1F(histname,200,0,1);
+      }
+    }
+    
     
     if(entry==0){
       checkMissingL1Prescale();
@@ -201,6 +279,15 @@ void testSelection(int run){
     } 
     
     
+    
+    for(unsigned int j=0; j< l1algoName->size() ;j++){
+      string l1 = l1algoName->at(j);
+      isL1Fired[j] =  isL1PathFired(l1);
+      if( isL1Fired[j]){
+	nL1bitsfired[j] ++; 
+      }
+    }
+    
     bool passAlcaPi0L1 = false; 
     for(int n=0; n< nL1alca; n++){
       string l1name = alcaPi0UsedL1[n];
@@ -212,6 +299,18 @@ void testSelection(int run){
       }
     }
     prescale_L1seeds();
+    
+    
+    for(unsigned int j=0; j< l1algoName->size() ;j++){
+      string l1 = l1algoName->at(j);
+      if( isL1PathFired_prescale(l1,1) ){
+	nL1bitsfiredps1[j] ++; 
+      }
+      if( isL1PathFired_prescale(l1,2) ){
+	nL1bitsfiredps2[j] ++; 
+      }
+    }
+    
     
     for(int n=0; n< nL1alca; n++){
       string l1name = alcaPi0UsedL1[n];
@@ -232,107 +331,145 @@ void testSelection(int run){
     
     bool toomanyEB = nSeedsEB > 200 || n3x3ClusEB > 30 ; 
     bool toomanyEE = nSeedsEE > 200 || n3x3ClusEE > 30 ; 
+    if( toomanyEB ){
+      n3x3ClusEB = 0; 
+    }
+    if( toomanyEE ){
+      n3x3ClusEE = 0; 
+    }
     
     
     vector<float> mpizseleb = selection_EB_piz();
     bool passMassPi0EB = false; 
     for(int j=0; j< int(mpizseleb.size()); j++){
       mpair = mpizseleb[j];
-      hh_mpair_ebpiz->Fill(mpair);
       if( mpair >0.04 && mpair < 0.23){
 	passMassPi0EB = true; 
       }
-      for(int n=0; n< nL1alca; n++){
-	if( isL1AlcaFired[n]){
-	  hh_mpair_ebpiz_L1alca[n] ->Fill(mpair);
+      for(int n=0; n<3; n++){
+	if( alcaL1Passed[n]){
+	  string histname = string(Form("mpair_ebpiz_l1alcaps_%d",n));
+	  fillTH1F(histname,mpair,1);
 	}
       }
-    }
-
-    bool passMassPi0EE = false; 
-    vector<float> mpizselee = selection_EE_piz();
-    for(int j=0; j< int(mpizselee.size()); j++){
-      mpair = mpizselee[j];
-      hh_mpair_eepiz->Fill(mpair);
-      if( mpair >0.05 && mpair < 0.3){
-	passMassPi0EE = true; 
-      }
-       
-      for(int n=0; n< nL1alca; n++){
-	if( isL1AlcaFired[n]){
-	  hh_mpair_eepiz_L1alca[n] ->Fill(mpair);
-	}
-      }
-    }
-    bool passPi0EB = ( !toomanyEB &&  passMassPi0EB);
-    bool passPi0EE = ( !toomanyEE &&  passMassPi0EE);
-    if( passPi0EB){
-      npizEB ++; 
-
-      for(int n=0; n< nL1alca; n++){
-	if(isL1AlcaFired[n]==1){
-	  nL1bitsfiredAlca_passSelpizEB[n]++;
+      for(unsigned int n=0; n< l1algoName->size() ;n++){
+	string l1 = l1algoName->at(n);
+	string histname = "mpair_pizeb_" +l1;
+	if( isL1Fired[n]){
+	  fillTH1F(histname,mpair,1);
 	}
       }
       
     }
-    if( passPi0EE){
-      npizEE ++; 
-      for(int n=0; n< nL1alca; n++){
-	if(isL1AlcaFired[n]==1){
-	  nL1bitsfiredAlca_passSelpizEE[n]++;
+    
+    bool passMassPi0EE = false; 
+    vector<float> mpizselee = selection_EE_piz();
+    for(int j=0; j< int(mpizselee.size()); j++){
+      mpair = mpizselee[j];
+      if( mpair >0.05 && mpair < 0.3){
+	passMassPi0EE = true; 
+      }
+      
+      for(int n=0; n<3; n++){
+	if( alcaL1Passed[n]){
+	  string histname = string(Form("mpair_eepiz_l1alcaps_%d",n));
+	  fillTH1F(histname,mpair,1);
 	}
       }
+      for(unsigned int n=0; n< l1algoName->size() ;n++){
+	string l1 = l1algoName->at(n);
+	string histname = "mpair_pizee_" +l1;
+	if( isL1Fired[n]){
+	  fillTH1F(histname,mpair,1);
+	}
+      }
+      
+    }
+    
+    bool passPi0EB =  passMassPi0EB;
+    bool passPi0EE =  passMassPi0EE;
+    if( passPi0EB){
+      npizEB ++; 
+    }
+    if( passPi0EE){
+      npizEE ++; 
     }
     bool passMassEtaEB = false; 
     vector<float> metaseleb = selection_EB_eta();
     for(int j=0; j< int(metaseleb.size()); j++){
       mpair = metaseleb[j];
-      hh_mpair_ebeta->Fill(mpair);
       if( mpair >0.3 && mpair < 0.8){
 	passMassEtaEB = true; 
       }
-      for(int n=0; n< nL1alca; n++){
-	if( isL1AlcaFired[n]){
-	  hh_mpair_ebeta_L1alca[n] ->Fill(mpair);
+      for(int n=0; n<3; n++){
+	if( alcaL1Passed[n]){
+	  string histname = string(Form("mpair_ebeta_l1alcaps_%d",n));
+	  fillTH1F(histname,mpair,1);
 	}
       }
+      for(unsigned int n=0; n< l1algoName->size() ;n++){
+	string l1 = l1algoName->at(n);
+	string histname = "mpair_etaeb_" +l1;
+	if( isL1Fired[n]){
+	  fillTH1F(histname,mpair,1);
+	}
+      }
+      
     }
     
     bool passMassEtaEE = false; 
     vector<float> metaselee = selection_EE_eta();
     for(int j=0; j< int(metaselee.size()); j++){
       mpair = metaselee[j];
-      hh_mpair_eeeta->Fill(mpair);
-
+      
+      for(int n=0; n<3; n++){
+	if( alcaL1Passed[n]){
+	  string histname = string(Form("mpair_eeeta_l1alcaps_%d",n));
+	  fillTH1F(histname,mpair,1);
+	}
+      }
+      for(unsigned int n=0; n< l1algoName->size() ;n++){
+	string l1 = l1algoName->at(n);
+	string histname = "mpair_etaee_" +l1;
+	if( isL1Fired[n]){
+	  fillTH1F(histname,mpair,1);
+	}
+      }
       if( mpair >0.2 && mpair < 0.9){
 	passMassEtaEE = true; 
       }
-      for(int n=0; n< nL1alca; n++){
-	if( isL1AlcaFired[n]){
-	  hh_mpair_eeeta_L1alca[n] ->Fill(mpair);
-	}
-      }
     }
-    bool passEtaEB = ( !toomanyEB && passMassEtaEB);
-    bool passEtaEE = ( !toomanyEE && passMassEtaEE) ;
+    
+    bool passEtaEB = passMassEtaEB;
+    bool passEtaEE = passMassEtaEE;
     
     if( passEtaEB){
       netaEB ++; 
-      for(int n=0; n< nL1alca; n++){
-	if( isL1AlcaFired[n]){
-	  nL1bitsfiredAlca_passSeletaEB[n]++;
-	}
-      }
     }
     if( passEtaEE){
       netaEE ++; 
-      for(int n=0; n< nL1alca; n++){
-	if( isL1AlcaFired[n]){
-	  nL1bitsfiredAlca_passSeletaEE[n]++;
-	}
+    }
+    
+    ///for only alca 
+    for(int n=0; n< nL1alca; n++){
+      if(isL1AlcaFired[n]==1){
+	if(passPi0EB) nL1bitsfiredAlca_passSelpizEB[n]++;
+	if(passPi0EE) nL1bitsfiredAlca_passSelpizEE[n]++;
+	if(passEtaEB) nL1bitsfiredAlca_passSeletaEB[n]++;
+	if(passEtaEE) nL1bitsfiredAlca_passSeletaEE[n]++;
       }
     }
+    
+    ////for all L1 bit
+    for(unsigned int j=0; j< l1algoName->size() ;j++){
+      if(isL1Fired[j]==1){
+	if( passPi0EB) nL1bitsfired_passSelpizEB[j]++;
+	if( passPi0EE) nL1bitsfired_passSelpizEE[j]++;
+	if( passEtaEB) nL1bitsfired_passSeletaEB[j]++;
+	if( passEtaEE) nL1bitsfired_passSeletaEE[j]++;
+      }
+    }
+    
     
     if( passPi0EB){
       if( npizEB % psAlcaPi0EB == 0){
@@ -370,8 +507,60 @@ void testSelection(int run){
 	if( passAlca){
 	  nL1AlcaSelected[j] ++; 
 	}
+	if(passPi0EB){
+	  nL1AlcaSelected_passpizeb[j] ++; 
+	}
+	if(passPi0EE){
+	  nL1AlcaSelected_passpizee[j] ++; 
+	}
+	if(passEtaEB){
+	  nL1AlcaSelected_passetaeb[j] ++; 
+	}
+	if(passEtaEE){
+	  nL1AlcaSelected_passetaee[j] ++; 
+	}
+	
       }
     }
+    
+  }
+  
+  ///for only alca l1
+  for(int n=0; n< nL1alca; n++){
+    string l1 = alcaPi0UsedL1[n];
+    int b = n+1;
+    hh_nL1firedAlca->SetBinContent(b,nL1bitsfiredAlca[n]);
+    hh_nL1firedAlca_passpizeb->SetBinContent(b,nL1bitsfiredAlca_passSelpizEB[b-1]);
+    hh_nL1firedAlca_passpizee->SetBinContent(b,nL1bitsfiredAlca_passSelpizEE[b-1]);
+    hh_nL1firedAlca_passetaeb->SetBinContent(b,nL1bitsfiredAlca_passSeletaEB[b-1]);
+    hh_nL1firedAlca_passetaee->SetBinContent(b,nL1bitsfiredAlca_passSeletaEE[b-1]);
+    hh_nL1firedAlca->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1firedAlca_passpizeb->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1firedAlca_passpizee->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1firedAlca_passetaeb->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1firedAlca_passetaee->GetXaxis()->SetBinLabel(b,l1.c_str());
+  }
+  
+  
+  ///for all L1s
+  for(int b=1; b<= int(l1algoName->size()) && b<=200; b++){
+    string l1 = l1algoName->at(b-1);
+    hh_nL1fired->SetBinContent(b,nL1bitsfired[b-1]);
+    hh_nL1firedps1->SetBinContent(b,nL1bitsfiredps1[b-1]);
+    hh_nL1firedps2->SetBinContent(b,nL1bitsfiredps2[b-1]);
+
+    hh_nL1fired_passpizeb->SetBinContent(b,nL1bitsfired_passSelpizEB[b-1]);
+    hh_nL1fired_passpizee->SetBinContent(b,nL1bitsfired_passSelpizEE[b-1]);
+    hh_nL1fired_passetaeb->SetBinContent(b,nL1bitsfired_passSeletaEB[b-1]);
+    hh_nL1fired_passetaee->SetBinContent(b,nL1bitsfired_passSeletaEE[b-1]);
+    
+    hh_nL1fired->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1firedps1->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1firedps2->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1fired_passpizeb->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1fired_passpizee->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1fired_passetaeb->GetXaxis()->SetBinLabel(b,l1.c_str());
+    hh_nL1fired_passetaee->GetXaxis()->SetBinLabel(b,l1.c_str());
     
   }
   
@@ -396,22 +585,29 @@ void testSelection(int run){
     }
   }
   
-
   txtout<<"npizSeleb/ee "<<" "<< npizEB <<" "<< npizEE <<" netaSeleb/ee " <<" "<< netaEB <<" "<< netaEE <<endl; 
   
-  
   for(int j=0; j<3; j++){
+    hh_nalcaL1Selected->SetBinContent(j+1,nL1Selected[j]);
+    hh_nalcaL1Selected_passebpiz->SetBinContent(j+1,nL1AlcaSelected_passpizeb[j]);
+    hh_nalcaL1Selected_passeepiz->SetBinContent(j+1,nL1AlcaSelected_passpizee[j]);
+    hh_nalcaL1Selected_passebeta->SetBinContent(j+1,nL1AlcaSelected_passetaeb[j]);
+    hh_nalcaL1Selected_passeeeta->SetBinContent(j+1,nL1AlcaSelected_passetaee[j]);
+    hh_nalcaL1Selected_passall->SetBinContent(j+1,nL1AlcaSelected[j]);
+    
     txtout<<"nL1Selected" << j<<" "<< nL1Selected[j]<<" nL1AlcaSelected "<<  nL1AlcaSelected[j]<<endl; 
   }
   
-  double lum = 2.82E33; 
-  double expectedLum[10] = {5E33,7E33};
-  for(int j=1; j<3; j++){
-    float projectedRate = expectedLum[j-1]/lum * nL1AlcaSelected[j]/ nZeroBiasSelected * 11 * 1317; 
-    txtout<<" projectedRate at " << expectedLum[j-1]<<" is "<< projectedRate<<" kHz " <<endl; 
-  }
   
-   
+//   double lum = instantLum_run[run];
+//   txtout<<"run " << run <<" lum " << lum <<endl; 
+//   double expectedLum[10] = {5E33,7E33};
+//   for(int j=1; j<3; j++){
+//     float projectedRate = expectedLum[j-1]/lum * nL1AlcaSelected[j]/ nZeroBiasSelected * 11 * 1317; 
+//     txtout<<" projectedRate at " << expectedLum[j-1]<<" is "<< projectedRate<<" kHz " <<endl; 
+//   }
+  
+  
   fnew->Write();
   fnew->Close();
   
