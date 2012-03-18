@@ -1,0 +1,11 @@
+test.py --> for re-run 2012L1 on  data and pi0 analyzer 
+
+hltRate/
+
+testSelection.C  --> analyze data to get the Alca trigger (or signal) efficiency per L1
+addtestSelection.C  --> merge those output from different jobs
+print_addtestSelection.C  --> print the efficiency results
+
+for Alca Rate estimate , change the file testSelection.C so that only one run is used , and check the rate, need to know the average ilum of that run to scale to the projected ilum. 
+
+print_L1rate.C --> print the rate results
