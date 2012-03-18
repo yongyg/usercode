@@ -10,7 +10,7 @@ map<string, int> l1menu_count2;
 void loadL1SeedsAndPrescale_5e33_7e33(){
   
   ifstream txtin; 
-  txtin.open("/uscms_data/d2/yongy/CMSSW/Pi0/piz_356/v1/CMSSW_5_2_0/src/L1_draft4_v2_edited_v2_simple.txt",ios::in);
+  txtin.open("L1_draft4_v2_edited_v2_simple.txt",ios::in);
   
     
   string lname; 
