@@ -1,9 +1,9 @@
 /** \class EcalRecalibRecHitProducer
  *   produce ECAL rechits from uncalibrated rechits
  *
- *  $Id: EcalRecalibRecHitProducer.cc,v 1.3 2012/04/13 14:27:52 yangyong Exp $
- *  $Date: 2012/04/13 14:27:52 $
- *  $Revision: 1.3 $
+ *  $Id: EcalRecalibRecHitProducer.cc,v 1.4 2012/04/13 15:20:49 yangyong Exp $
+ *  $Date: 2012/04/13 15:20:49 $
+ *  $Revision: 1.4 $
  *  \author Federico Ferri, University of Milano Bicocca and INFN
  *
  **/
@@ -144,6 +144,7 @@ void EcalRecalibRecHitProducer::produce(edm::Event& evt, const edm::EventSetup& 
                 for(EBRecHitCollection::const_iterator it  = EBRecHits->begin(); it != EBRecHits->end(); ++it) {
 		  if(n%2==0) agc_eb = agc_eb_true;
 		  else agc_eb = 1.0/ agc_eb_true;
+		  n ++; 
 		  
                         EcalIntercalibConstant icalconst = 1.;
                         if (doIntercalib_) {
