@@ -1,9 +1,9 @@
 /** \class EcalRecalibRecHitProducer
  *   produce ECAL rechits from uncalibrated rechits
  *
- *  $Id: EcalRecalibRecHitProducer.cc,v 1.2 2012/03/06 23:39:37 yangyong Exp $
- *  $Date: 2012/03/06 23:39:37 $
- *  $Revision: 1.2 $
+ *  $Id: EcalRecalibRecHitProducer.cc,v 1.3 2012/04/13 14:27:52 yangyong Exp $
+ *  $Date: 2012/04/13 14:27:52 $
+ *  $Revision: 1.3 $
  *  \author Federico Ferri, University of Milano Bicocca and INFN
  *
  **/
@@ -136,9 +136,15 @@ void EcalRecalibRecHitProducer::produce(edm::Event& evt, const edm::EventSetup& 
 	
 	
         if (EBRecHits) {
+	  
+	  float agc_eb_true = agc_eb;
+          int n = 0;
+	  
                 // loop over uncalibrated rechits to make calibrated ones
                 for(EBRecHitCollection::const_iterator it  = EBRecHits->begin(); it != EBRecHits->end(); ++it) {
-
+		  if(n%2==0) agc_eb = agc_eb_true;
+		  else agc_eb = 1.0/ agc_eb_true;
+		  
                         EcalIntercalibConstant icalconst = 1.;
                         if (doIntercalib_) {
                                 // find intercalib constant for this xtal
@@ -175,9 +181,17 @@ void EcalRecalibRecHitProducer::produce(edm::Event& evt, const edm::EventSetup& 
 
         if (EERecHits)
         {
+	  float agc_ee_true = agc_ee;
+          int n = 0;
+
                 // loop over uncalibrated rechits to make calibrated ones
                 for(EERecHitCollection::const_iterator it  = EERecHits->begin();
                                 it != EERecHits->end(); ++it) {
+
+		  if(n%2==0) agc_ee = agc_ee_true;
+		  else agc_ee = 1.0/ agc_ee_true;
+		  n ++;
+
 
                         // find intercalib constant for this xtal
                         EcalIntercalibConstant icalconst = 1.;
