@@ -1363,5 +1363,8 @@ class Pi0Analyzer : public edm::EDAnalyzer {
       int nSeedsEB;
       int nSeedsEE;
       
+      int nRechitsEB;
+      int nRechitsEE;
+      
       
 };

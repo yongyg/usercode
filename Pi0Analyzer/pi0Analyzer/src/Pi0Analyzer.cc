@@ -167,7 +167,7 @@ Pi0Analyzer::Pi0Analyzer(const edm::ParameterSet& iConfig){
   useRecoFlag_ = iConfig.getUntrackedParameter<bool>("useRecoFlag", false);
   flagLevelRecHitsToUse_ = iConfig.getUntrackedParameter<int>("flagLevelRecHitsToUse",1); 
   useDBStatus_ = iConfig.getUntrackedParameter<bool>("useDBStatus",true);
-  statusLevelRecHitsToUse_ = iConfig.getUntrackedParameter<int>("statusLevelRecHitsToUse",0); 
+  statusLevelRecHitsToUse_ = iConfig.getUntrackedParameter<int>("statusLevelRecHitsToUse",1); 
   
   removeSpike_ = iConfig.getUntrackedParameter<int>("removeSpike",1);
   
@@ -237,6 +237,9 @@ Pi0Analyzer::Pi0Analyzer(const edm::ParameterSet& iConfig){
   
   doSelForEtaEndcap_ = iConfig.getParameter<bool>("doSelForEtaEndcap");  
   endcapHitsEta_ = iConfig.getUntrackedParameter< edm::InputTag > ("endcapHitsEta",edm::InputTag("ecalEtaCorrected","etaEcalRecHitsEE"));
+  
+  if(debug_ >=1 ) cout<<" doSelForEtaEndcap_ " << doSelForEtaEndcap_ <<endl; 
+
   if(doSelForEtaEndcap_){
     region1_EtaEndCap_ = iConfig.getUntrackedParameter<double> ("region1_EtaEndCap",2.0);
     selePtGammaEtaEndCap_region1_ = iConfig.getUntrackedParameter<double> ("selePtGammaEtaEndCap_region1",1.0);  
@@ -250,8 +253,8 @@ Pi0Analyzer::Pi0Analyzer(const edm::ParameterSet& iConfig){
     seleS4S9GammaEtaEndCap_ = iConfig.getUntrackedParameter<double> ("seleS4S9GammaEtaEndCap",0.9);  
     seleS9S25GammaEtaEndCap_ = iConfig.getUntrackedParameter<double> ("seleS9S25GammaEtaEndCap",0.85);  
     
-    seleMinvMaxEtaEndCap_ = iConfig.getUntrackedParameter<double> ("seleMinvMaxEtaEndCap",0.2);  
-    seleMinvMinEtaEndCap_ = iConfig.getUntrackedParameter<double> ("seleMinvMinEtaEndCap",0.9);  
+    seleMinvMaxEtaEndCap_ = iConfig.getUntrackedParameter<double> ("seleMinvMaxEtaEndCap",0.9);  
+    seleMinvMinEtaEndCap_ = iConfig.getUntrackedParameter<double> ("seleMinvMinEtaEndCap",0.2);  
     seleEtaBeltDREndCap_ = iConfig.getUntrackedParameter<double> ("seleEtaBeltDREndCap",0.3);  
     seleEtaBeltDetaEndCap_ = iConfig.getUntrackedParameter<double> ("seleEtaBeltDetaEndCap",0.1);  
     ptMinForIsolationEtaEndCap_  = iConfig.getUntrackedParameter<double>("ptMinForIsolationEtaEndCap",0.5);
@@ -1043,6 +1046,13 @@ Pi0Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   nEventsProcessed ++; 
   
+  n3x3ClusEB = 0; 
+  n3x3ClusEE = 0; 
+  nSeedsEB = 0; 
+  nSeedsEE = 0; 
+  nRechitsEB = 0; 
+  nRechitsEE = 0; 
+  
   if( doSelForPi0Barrel_ || saveAllPhotonBarrel_ ){
     try{
       Handle<EBRecHitCollection> barrelRecHitsHandle;
@@ -1066,6 +1076,32 @@ Pi0Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     
   }
   
+  if(doSelForPi0Endcap_ || saveAllPhotonEndcap_ ){
+    try{
+      Handle<EERecHitCollection> endcapRecHitsHandle;
+      iEvent.getByLabel(endcapHits_,endcapRecHitsHandle);
+      const EcalRecHitCollection *hitCollection_p = endcapRecHitsHandle.product();
+      
+      makeNxNClusters(iEvent,iSetup,hitCollection_p, reco::CaloID::DET_ECAL_ENDCAP);
+      
+      if(debug_>=2) cout<<"do selection pi0  endcap.." <<endl; 
+      if(doSelForPi0Endcap_){
+	doSelectionAndFillTree(iEvent,iSetup,reco::CaloID::DET_ECAL_ENDCAP,false,PIZ,seleS4S9GammaEndCap_,-999,seleMinvMinPi0EndCap_,seleMinvMaxPi0EndCap_,selePi0BeltDetaEndCap_,selePi0BeltDREndCap_,ptMinForIsolationEndCap_,selePi0IsoEndCap_);
+      }
+    
+    }catch(std::exception& ex ){
+      nErrorPrinted++;
+      if(nErrorPrinted< maxErrorToPrint) cout<<"encapRecHits NA.."<<endl;
+    }
+  }
+  
+
+  if( saveAllPhotonBarrel_ || saveAllPhotonEndcap_ ){
+    mytree_clusters->Fill();
+  }
+
+
+    
   if(doSelForEtaBarrel_){
     try{
       Handle<EBRecHitCollection> barrelRecHitsHandle;
@@ -1087,53 +1123,33 @@ Pi0Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
   
-  
-  if(doSelForPi0Endcap_ || saveAllPhotonEndcap_ ){
+
+  if(doSelForEtaEndcap_){
+    if(debug_>=2) cout<<" doSelForEtaEndcap_ " <<endl; 
     try{
-      Handle<EERecHitCollection> endcapRecHitsHandle;
-      iEvent.getByLabel(endcapHits_,endcapRecHitsHandle);
-      const EcalRecHitCollection *hitCollection_p = endcapRecHitsHandle.product();
-      
-      makeNxNClusters(iEvent,iSetup,hitCollection_p, reco::CaloID::DET_ECAL_ENDCAP);
-      
-      if(debug_>=2) cout<<"do selection pi0  endcap.." <<endl; 
-      if(doSelForPi0Endcap_){
-	doSelectionAndFillTree(iEvent,iSetup,reco::CaloID::DET_ECAL_ENDCAP,false,PIZ,seleS4S9GammaEndCap_,-999,seleMinvMinPi0EndCap_,seleMinvMaxPi0EndCap_,selePi0BeltDetaEndCap_,selePi0BeltDREndCap_,ptMinForIsolationEndCap_,selePi0IsoEndCap_);
-      }
+    
+    if(debug_>=2) cout<<" getting endcapee" <<" "<< endcapHitsEta_.label()<<endl;
+    
+    Handle<EERecHitCollection> endcapRecHitsHandle;
+    iEvent.getByLabel(endcapHitsEta_,endcapRecHitsHandle);
+    
+    if(debug_>=2) cout<<" got endcapee" <<endl; 
+    
+    const EcalRecHitCollection *hitCollection_p = endcapRecHitsHandle.product();
+    if(debug_>=2) cout<<"doselectionetaendcap.." <<hitCollection_p->size()<<endl; 
+    
+    makeNxNClusters(iEvent,iSetup,hitCollection_p, reco::CaloID::DET_ECAL_ENDCAP);
+    
+    
+    doSelectionAndFillTree(iEvent,iSetup,reco::CaloID::DET_ECAL_ENDCAP,false,ETA,seleS4S9GammaEtaEndCap_,seleS9S25GammaEtaEndCap_,seleMinvMinEtaEndCap_,seleMinvMaxEtaEndCap_,seleEtaBeltDetaEndCap_,seleEtaBeltDREndCap_,ptMinForIsolationEtaEndCap_,seleEtaIsoEndCap_);
+    
     
     }catch(std::exception& ex ){
+      
       nErrorPrinted++;
-      if(nErrorPrinted< maxErrorToPrint) cout<<"encapRecHits NA.."<<endl;
+    if(nErrorPrinted< maxErrorToPrint) cout<<"endcapRecHitsEta NA.."<<endl;
     }
   }
-
-
-  if( saveAllPhotonBarrel_ || saveAllPhotonEndcap_ ){
-    mytree_clusters->Fill();
-  }
-
-  
-  if(doSelForEtaEndcap_){
-    try{
-      Handle<EERecHitCollection> endcapRecHitsHandle;
-      iEvent.getByLabel(endcapHitsEta_,endcapRecHitsHandle);
-      const EcalRecHitCollection *hitCollection_p = endcapRecHitsHandle.product();
-      
-      makeNxNClusters(iEvent,iSetup,hitCollection_p, reco::CaloID::DET_ECAL_ENDCAP);
-      
-      if(debug_>=2) cout<<"do selection eta  endcap.." <<endl; 
-      
-      
-      doSelectionAndFillTree(iEvent,iSetup,reco::CaloID::DET_ECAL_ENDCAP,false,ETA,seleS4S9GammaEtaEndCap_,seleS9S25GammaEtaEndCap_,seleMinvMinEtaEndCap_,seleMinvMaxEtaEndCap_,seleEtaBeltDetaEndCap_,seleEtaBeltDREndCap_,ptMinForIsolationEtaEndCap_,seleEtaIsoEndCap_);
-      
-      
-    }catch(std::exception& ex ){
-      nErrorPrinted++;
-      if(nErrorPrinted< maxErrorToPrint) cout<<"endcapRecHitsEta NA.."<<endl;
-    }
-  }
-  
-
   
 }
 
@@ -1191,7 +1207,10 @@ void Pi0Analyzer::beginJob()
     
     mytree_clusters->Branch("nSeedsEB",&nSeedsEB,"nSeedsEB/I");
     mytree_clusters->Branch("nSeedsEE",&nSeedsEE,"nSeedsEE/I");
-        
+    
+    mytree_clusters->Branch("nRechitsEB",&nRechitsEB,"nRechitsEB/I");
+    mytree_clusters->Branch("nRechitsEE",&nRechitsEE,"nRechitsEE/I");
+    
     ///clusters
     if( saveAllPhotonBarrel_){
       
@@ -1263,7 +1282,7 @@ void Pi0Analyzer::beginJob()
     ///mytree_pizeb->Branch("phipair",&phipair,"phipair/F");
     mytree_pizeb->Branch("ptmin",&ptmin,"ptmin/F");
     mytree_pizeb->Branch("isolation",&isolation,"isolation/F");
-    
+    mytree_pizeb->Branch("vBeamSpot",vBeamSpot,"vBeamSpot[3]/F");
     mytree_pizeb->Branch("s4s9min",&s4s9min,"s4s9min/F");
     //mytree_pizeb->Branch("s9s25min",&s9s25min,"s9s25min/F");
     
@@ -1353,7 +1372,7 @@ void Pi0Analyzer::beginJob()
     mytree_pizee->Branch("yClus2",&yClus2,"yClus2/F");
     mytree_pizee->Branch("zClus2",&zClus2,"zClus2/F");
     
-
+    mytree_pizee->Branch("vBeamSpot",vBeamSpot,"vBeamSpot[3]/F");
 
     mytree_pizee->Branch("eXtalClus1",eXtalClus1,"eXtalClus1[nxtClus1]/F");
     mytree_pizee->Branch("laserCorrXtalClus1",laserCorrXtalClus1,"laserCorrXtalClus1[nxtClus1]/F");
@@ -1395,7 +1414,8 @@ void Pi0Analyzer::beginJob()
     
     mytree_etaeb->Branch("l1bitFired","std::vector<unsigned short>",&l1bitFired);
     ///mytree_etaeb->Branch("l1algoName","std::vector<std::string>",&l1algoName);
-    
+
+    mytree_etaeb->Branch("vBeamSpot",vBeamSpot,"vBeamSpot[3]/F");
     
     mytree_etaeb->Branch("mpair",&mpair,"mpair/F");
     mytree_etaeb->Branch("ptpair",&ptpair,"ptpair/F");
@@ -1479,6 +1499,7 @@ void Pi0Analyzer::beginJob()
     mytree_etaee->Branch("s9s25min",&s9s25min,"s9s25min/F");
     ///mytree_etaee->Branch("s9s25min",&s9s25min,"s9s25min/F");
     
+    mytree_etaee->Branch("vBeamSpot",vBeamSpot,"vBeamSpot[3]/F");
     
     mytree_etaee->Branch("xClus1",&xClus1,"xClus1/F");
     mytree_etaee->Branch("yClus1",&yClus1,"yClus1/F");
@@ -1533,7 +1554,7 @@ void Pi0Analyzer::beginJob()
 
 
 
-// ------------ method called once each job just after ending the event loop  ------------
+// ------------ method called once each job just after ending the As you know the AlCa filters event loop  ------------
 void 
 Pi0Analyzer::endJob() {
   
@@ -2451,20 +2472,48 @@ void Pi0Analyzer::makeNxNClusters(const edm::Event &evt, const edm::EventSetup &
   }else{
     clusterSeedThreshold = clusSeedThrEndCap_; 
   }
+
+  if(debug_>=2) cout<<" makecluster " << hits->size() << " "<< evtNumber <<" "<< runNumber <<" "<< lumiBlock<<endl; 
   
 
   for(EcalRecHitCollection::const_iterator itt = hits->begin(); itt != hits->end(); itt++){
     double energy = itt->energy();
+
+    if( debug_ >=2 && energy<= clusterSeedThreshold ){
+      if( detector == reco::CaloID::DET_ECAL_BARREL ){
+	EBDetId seed_id = (EBDetId)itt->id();
+	cout<<" seednotEBcrystal " <<seed_id.ieta()<<" "<<seed_id.iphi()<<" "<< energy <<" "<< evt.id().run()<<" event "<<evt.id().event() <<" "<< endl;
+      }else{
+	EEDetId seed_id = (EEDetId)itt->id();
+	cout<<" seednotEEcrystal " <<seed_id.ix()<<" "<<seed_id.iy()<<" "<< seed_id.zside()<<" "<<energy <<" "<< evt.id().run()<<" event "<<evt.id().event() <<" "<< endl;
+      }
+    }
+    
     if( ! checkStatusOfEcalRecHit(channelStatus, *itt) ) continue; 
-    if (energy > clusterSeedThreshold ) seeds.push_back(*itt);
+    if (energy > clusterSeedThreshold ){
+      seeds.push_back(*itt);
+      if( debug_ >=2){
+        if( detector == reco::CaloID::DET_ECAL_BARREL ){
+          EBDetId seed_id = (EBDetId)itt->id();
+          cout<<" seedEBcrystal " <<seed_id.ieta()<<" "<<seed_id.iphi()<<" "<< energy <<" "<< evt.id().run()<<" event "<<evt.id().event() <<" "<< endl; 
+        }else{
+          EEDetId seed_id = (EEDetId)itt->id();
+          cout<<" seedEEcrystal " <<seed_id.ix()<<" "<<seed_id.iy()<<" "<< seed_id.zside()<<" "<<energy <<" "<< evt.id().run()<<" event "<<evt.id().event() <<" "<< endl; 
+        }
+      }
+
+      
+    }
+    
   }
   
   if (detector == reco::CaloID::DET_ECAL_BARREL){
+    nRechitsEB = int(hits->size());
     nSeedsEB = int(seeds.size());
   }else{
+    nRechitsEE = int(hits->size());
     nSeedsEE = int(seeds.size());
   }
-  
   
   // get the geometry and topology from the event setup:
   edm::ESHandle<CaloGeometry> geoHandle;
@@ -2546,7 +2595,8 @@ void Pi0Analyzer::makeNxNClusters(const edm::Event &evt, const edm::EventSetup &
       seedx = ebd.ieta();
       seedy = ebd.iphi();
       convxtalid(seedy,seedx);
-      
+
+
       // hh_mul_ietaSeedClus->Fill(ebd.ieta());
       // hh_mul_iphiSeedClus->Fill(ebd.iphi());
       
@@ -2658,6 +2708,8 @@ void Pi0Analyzer::makeNxNClusters(const edm::Event &evt, const edm::EventSetup &
       s4s93x3ClusEB[j] = s4s9Clus[j];
       s9s253x3ClusEB[j] = s9s25Clus[j];
 
+      if(debug_>=2) cout<<"clusterebseedenergy " << ((EBDetId)RecHitsCluster[j][0].id()).ieta()<<" "<<((EBDetId)RecHitsCluster[j][0].id()).iphi()<<" "<< RecHitsCluster[j][0].energy()<<endl;
+      
       for( int k =0 ; k< 9; k++){
 	if( k<nXt3x3ClusEB[j]){
 	  eXt3x3ClusEB[j][k] = RecHitsCluster[j][k].energy();
@@ -2690,6 +2742,8 @@ void Pi0Analyzer::makeNxNClusters(const edm::Event &evt, const edm::EventSetup &
       s4s93x3ClusEE[j] = s4s9Clus[j];
       //s6s93x3ClusEE[j] = s6s9Clus[j];
       s9s253x3ClusEE[j] = s9s25Clus[j];
+      
+      if(debug_>=2) cout<<"clustereeseedenergy " << ((EEDetId)RecHitsCluster[j][0].id()).ix()<<" "<<((EEDetId)RecHitsCluster[j][0].id()).iy()<<" "<< RecHitsCluster[j][0].energy()<<endl;
       
       for( int k =0 ; k< 9; k++){
 	if( k<nXt3x3ClusEE[j]){
