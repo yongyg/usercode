@@ -134,8 +134,6 @@ process.pi0Analyzer = cms.EDAnalyzer("Pi0Analyzer",
                                      usegtDigis = cms.untracked.bool (True),
                                      l1GtRecordInputTag = cms.untracked.InputTag("hltGtDigis"),
                                      beamSpotInputTag = cms.untracked.InputTag("offlineBeamSpot"),
-                                     saveAllPhotonBarrel = cms.untracked.bool (False),
-                                     saveAllPhotonEndcap = cms.untracked.bool (False),
                                      
                                      doSelForPi0Barrel = cms.bool( True ),
                                      barrelHits = cms.untracked.InputTag( 'ecalPi0CorrectedEB','pi0EcalRecHitsEB' ),

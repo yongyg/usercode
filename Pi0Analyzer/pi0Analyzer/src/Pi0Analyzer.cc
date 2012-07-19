@@ -157,8 +157,8 @@ Pi0Analyzer::Pi0Analyzer(const edm::ParameterSet& iConfig){
   fullRECO_  = iConfig.getUntrackedParameter<int> ("fullRECO", 0 );
   
   
-  saveAllPhotonBarrel_ = iConfig.getUntrackedParameter<bool>("saveAllPhotonBarrel");
-  saveAllPhotonEndcap_ = iConfig.getUntrackedParameter<bool>("saveAllPhotonEndcap");
+  saveAllPhotonBarrel_ = iConfig.getUntrackedParameter<bool>("saveAllPhotonBarrel",false);
+  saveAllPhotonEndcap_ = iConfig.getUntrackedParameter<bool>("saveAllPhotonEndcap",false);
   
   getBeamSpotOnly_ = iConfig.getUntrackedParameter<bool>("getBeamSpotOnly",false);
   
