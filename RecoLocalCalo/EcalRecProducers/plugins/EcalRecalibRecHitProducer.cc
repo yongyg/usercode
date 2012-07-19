@@ -1,9 +1,9 @@
 /** \class EcalRecalibRecHitProducer
  *   produce ECAL rechits from uncalibrated rechits
  *
- *  $Id: EcalRecalibRecHitProducer.cc,v 1.4 2012/04/13 15:20:49 yangyong Exp $
- *  $Date: 2012/04/13 15:20:49 $
- *  $Revision: 1.4 $
+ *  $Id: EcalRecalibRecHitProducer.cc,v 1.5 2012/04/13 17:29:18 yangyong Exp $
+ *  $Date: 2012/04/13 17:29:18 $
+ *  $Revision: 1.5 $
  *  \author Federico Ferri, University of Milano Bicocca and INFN
  *
  **/
@@ -142,9 +142,14 @@ void EcalRecalibRecHitProducer::produce(edm::Event& evt, const edm::EventSetup& 
 	  
                 // loop over uncalibrated rechits to make calibrated ones
                 for(EBRecHitCollection::const_iterator it  = EBRecHits->begin(); it != EBRecHits->end(); ++it) {
-		  if(n%2==0) agc_eb = agc_eb_true;
-		  else agc_eb = 1.0/ agc_eb_true;
-		  n ++; 
+
+		  if( evt.id().run() >= 190456 && evt.id().run() < 191572){ //bugfix in online code
+		    if(n%2==0) agc_eb = agc_eb_true;
+		    else agc_eb = 1.0/ agc_eb_true;
+		    n ++; 
+		  }else{
+		    agc_eb = agc_eb_true;
+		  }
 		  
                         EcalIntercalibConstant icalconst = 1.;
                         if (doIntercalib_) {
@@ -189,12 +194,15 @@ void EcalRecalibRecHitProducer::produce(edm::Event& evt, const edm::EventSetup& 
                 for(EERecHitCollection::const_iterator it  = EERecHits->begin();
                                 it != EERecHits->end(); ++it) {
 
-		  if(n%2==0) agc_ee = agc_ee_true;
-		  else agc_ee = 1.0/ agc_ee_true;
-		  n ++;
-
-
-                        // find intercalib constant for this xtal
+		  if( evt.id().run() >= 190456 && evt.id().run() < 191572){ //bugfix in online code
+		    if(n%2==0) agc_ee = agc_ee_true;
+		    else agc_ee = 1.0/ agc_ee_true;
+		    n ++;
+		  }else{
+		    agc_ee = agc_ee_true;
+		  }
+		  
+		  // find intercalib constant for this xtal
                         EcalIntercalibConstant icalconst = 1.;
                         if (doIntercalib_) {
                                 const EcalIntercalibConstantMap &icalMap = ical->getMap();
