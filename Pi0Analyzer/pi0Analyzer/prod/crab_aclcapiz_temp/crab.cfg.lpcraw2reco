@@ -1,0 +1,32 @@
+[CRAB]
+jobtype = cmssw
+#scheduler = lsf
+scheduler = condor
+
+[CMSSW]
+datasetpath=InputDataSet
+pset=runpizfromdata.py
+runselection = xxxxxx
+lumis_per_job = 20
+total_number_of_lumis = -1
+##number_of_jobs = 1
+
+### The output files produced by your application (comma separated list)
+output_file = pi0Analyzer.datasetname.GRTagName_runxxxxxx.root
+
+[USER]
+## output is returned to your submission area
+return_data = 0
+
+## OR output is copied to castor via rfcp
+copy_data = 1
+
+storage_element        = cmssrm.fnal.gov
+storage_path           = /srm/managerv2?SFN=/resilient/username/data/
+user_remote_dir = pizdata/xxxxxx
+
+
+[CAF]
+### In case you want to select a specific LSF Queue: eg one longher that the default one
+#queue=cmscaf1nh 
+#resource=cmscaf

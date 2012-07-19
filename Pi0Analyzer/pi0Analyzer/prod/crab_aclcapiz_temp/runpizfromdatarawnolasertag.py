@@ -117,26 +117,12 @@ process.source = cms.Source("PoolSource",
 #process.GlobalTag.globaltag = 'GR_P_V32::All'
 process.GlobalTag.globaltag = 'GRTagName::All'
 
-process.GlobalTag.toGet = cms.VPSet(
-        cms.PSet(record = cms.string("EcalLaserAPDPNRatiosRcd"),
-                 #tag = cms.string("EcalLaserAPDPNRatios_2011fit_noVPT_nolim_online"),
-                 tag = cms.string("EcalLaserAPDPNRatios_laserTagName"),
-                 connect = cms.untracked.string("frontier://FrontierPrep/CMS_COND_ECAL")
-                              )
-        )
-
-
-
-##
 
 process.pi0Analyzer = cms.EDAnalyzer("Pi0Analyzer",
-                                     outputFile = cms.string('pi0Analyzer.datasetname.GRTagName.laserTagName.runxxxxxx.root'),
+                                     outputFile = cms.string('pi0Analyzer.datasetname.GRTagName.runxxxxxx.root'),
                                      usegtDigis = cms.untracked.bool (True),
                                      l1GtRecordInputTag = cms.untracked.InputTag("hltGtDigis"),
                                      beamSpotInputTag = cms.untracked.InputTag("offlineBeamSpot"),
-                                     saveAllPhotonBarrel = cms.untracked.bool (False),
-                                     saveAllPhotonEndcap = cms.untracked.bool (False),
-                                     
                                      doSelForPi0Barrel = cms.bool( True ),
                                      barrelHits = cms.untracked.InputTag( 'ecalPi0CorrectedEB','pi0EcalRecHitsEB' ),
                                      doSelForPi0Endcap = cms.bool( True ),
