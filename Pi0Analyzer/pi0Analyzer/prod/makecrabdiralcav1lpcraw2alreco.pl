@@ -47,13 +47,12 @@ foreach (@lists) {
 
     if( $laserTagName == "-"){
 	system("cp crab_aclcapiz_temp/runpizfromdatarawnolasertag.py $newdir/runpizfromdata.py");
+	system("cp crab_aclcapiz_temp/crab.cfg.lpcraw2reco $newdir/crab.cfg");
     }else{
+	system("cp crab_aclcapiz_temp/crab.cfg.lpcraw2recolasertag $newdir/crab.cfg");
 	system("cp crab_aclcapiz_temp/runpizfromdataraw.py $newdir/runpizfromdata.py");
     }
 
-    system("cp crab_aclcapiz_temp/crab.cfg.lpcraw2reco $newdir/crab.cfg");
-        
-    #my $outdir = "/pnfs/cms/WAX/resilient/yangyong/data/pizdata/$run";
     my $outdir = "/pnfs/cms/WAX/resilient/username/data/pizdata/$run";
     if(-d $outdir) {
         print "directory in resilient already exist..\n";
