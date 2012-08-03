@@ -13,7 +13,7 @@
 //
 // Original Author:  Yong Yang
 //         Created:  Wed Nov 23 09:31:00 CST 2011
-// $Id: EgammaMVAEnergyCorrector.cc,v 1.4 2012/01/18 14:11:30 yangyong Exp $
+// $Id$
 //
 //
 
@@ -21,6 +21,7 @@
 
 void EgammaMVAEnergyCorrector::Initialize(const edm::EventSetup &iSetup, vector<std::string> regweights){
   
+  cout<<" EgammaMVAEnergyCorrector::Initialize " <<endl; 
   
   fIsInitialized = kTRUE;
   PhotonFix::initialiseGeometry(iSetup);
@@ -85,9 +86,13 @@ void EgammaMVAEnergyCorrector::Initialize(const edm::EventSetup &iSetup, vector<
     reader_eeErr->AddVariable(eevarname[j],&fVals[j]);
   }
   reader_eeErr->AddVariable("escregcorr/(escraw+eps)",&fVals[20]);
+  cout<<" reader_eb->BookMVA " <<endl;
   reader_eb->BookMVA(methodName,regweights[0].c_str());
+  cout<<" reader_ebErr->BookMVA " <<endl;
   reader_ebErr->BookMVA(methodName,regweights[1].c_str());
+  cout<<" reader_ee->BookMVA " <<endl;
   reader_ee->BookMVA(methodName,regweights[2].c_str());
+  cout<<" reader_eeErr->BookMVA " <<endl;
   reader_eeErr->BookMVA(methodName,regweights[3].c_str());
   
 }
@@ -123,13 +128,13 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
   const SuperCluster &s = *p.superCluster();
   const BasicCluster &b = *s.seed();
   PhotonFix phfix(s.eta(),s.phi()); 
-  Bool_t isbarrel =  b.hitsAndFractions().at(0).first.subdetId()==EcalBarrel;
+  Bool_t isbarrel = (std::abs(s.eta())<1.48);
   
   if (isbarrel) {
     fVals[0]  = s.rawEnergy();
     fVals[1]  = s.eta();
     fVals[2]  = s.phi();
-    fVals[3]  = p.e5x5() /s.rawEnergy();
+    fVals[3]  = clustertools.e5x5(b) /s.rawEnergy();
     fVals[4]  = p.r9();
     fVals[5]  = clustertools.e2x5Left(b);
     fVals[6]  = clustertools.e2x5Right(b);
@@ -162,7 +167,7 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
     fVals[1]  = s.eta();
     fVals[2]  = s.phi();
     fVals[3]  = s.preshowerEnergy()/s.rawEnergy();
-    fVals[4]  = p.e5x5() / s.rawEnergy(); 
+    fVals[4]  = clustertools.e5x5(b)/s.rawEnergy();
     fVals[5]  = p.r9();
     fVals[6]  = clustertools.e2x5Left(b);
     fVals[7]  = clustertools.e2x5Right(b);
@@ -206,7 +211,6 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
   }
   ecorr = eraw * corr; 
   ecorrErr = ecorr * corrErr * varscale; ///error is trained to |escregcorr-etrue|/escregcorr
-  
   return std::pair<float,float>(ecorr,ecorrErr);
   
 }
@@ -215,18 +219,15 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
 std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const GsfElectron &e, EcalClusterLazyTools &clustertools, int nvtx, float rho) {
   
   const SuperCluster &s = *e.superCluster();
-  ///for tracker-driven only, no correction
-  if (!e.ecalDrivenSeed()) return std::pair<double,double>(s.energy(),0);
-  
   const BasicCluster &b = *s.seed();
   PhotonFix phfix(s.eta(),s.phi()); 
-  Bool_t isbarrel =  b.hitsAndFractions().at(0).first.subdetId()==EcalBarrel;
+  Bool_t isbarrel = (std::abs(s.eta())<1.48);
   
   if (isbarrel) {
     fVals[0]  = s.rawEnergy();
     fVals[1]  = s.eta();
     fVals[2]  = s.phi();
-    fVals[3]  = e.e5x5();
+    fVals[3]  = clustertools.e5x5(b); 
     fVals[4]  = clustertools.e3x3(b); 
     fVals[5]  = clustertools.e2x5Left(b);
     fVals[6]  = clustertools.e2x5Right(b);
@@ -259,7 +260,7 @@ std::pair<float,float> EgammaMVAEnergyCorrector::CorrectedEnergyWithError(const 
     fVals[1]  = s.eta();
     fVals[2]  = s.phi();
     fVals[3]  = s.preshowerEnergy(); 
-    fVals[4]  = e.e5x5();
+    fVals[4]  = clustertools.e5x5(b);
     fVals[5]  = clustertools.e3x3(b);
     fVals[6]  = clustertools.e2x5Left(b);
     fVals[7]  = clustertools.e2x5Right(b);
