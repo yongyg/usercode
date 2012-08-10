@@ -229,6 +229,14 @@ void combineCalibConstantv2(){
   getCrystaldeadflagBarrel_v1("../Pi0Calibration/Barrel/crystal_deadflag_eb_dflag2.txt",ndeadflagietaiphi_ic[0]); 
   getCrystaldeadflagBarrel_v1("../Pi0Calibration/Barrel/crystal_deadflag_eb_dflag3.txt",ndeadflagietaiphi_ic[1]); 
 
+
+    
+  vector<string> inputfileStat; 
+  inputfileStat.push_back("../Pi0Calibration/Barrel/calibres/deriveCalibConst.dflag2.pe1.step3.iter11.root");
+  inputfileStat.push_back("../Pi0Calibration/Barrel/calibres/deriveCalibConst.dflag3.pe2.step3.iter11.root");
+
+
+
   ofstream txtoutTocheck("combinedCalibConstantv2.txt");
     
   
@@ -313,7 +321,6 @@ void combineCalibConstantv2(){
     }
   }
   
-  cout<<"sddd" <<endl; 
 
   
   TH1F *hh_c_ieta[50][170];
@@ -406,7 +413,6 @@ void combineCalibConstantv2(){
     }
   }
 
-  cout<<"sdddd" <<endl; 
     
   
   TH1F *hh_res_cietaAbs_period[50][3];
@@ -519,8 +525,6 @@ void combineCalibConstantv2(){
     }
   }
   
-  cout<<"sddda" <<endl; 
-  
 
   for(int j=0; j< nConstantSet; j++){
     for(int k=0; k<3; k++){
@@ -567,7 +571,6 @@ void combineCalibConstantv2(){
   TH1F *hh_res_diff_csmallietaTT[50][50][3];
   TH1F *hh_res_diff_csmallietaTTAbs[50][50][3];
   
-  cout<<"sdddb" <<endl; 
 
   for(int n=0; n< nConstantSet; n++){
     for(int k=n+1; k< nConstantSet; k++){
@@ -619,7 +622,6 @@ void combineCalibConstantv2(){
     }
   }
 
-  cout<<"sddde" <<endl; 
 
   TH2F *hh2_largeICdiff[50][50];
   for(int n=0; n< nIC; n++){
@@ -629,10 +631,7 @@ void combineCalibConstantv2(){
     }
   }
   TH2F *hh2_largeICdiff_all =new TH2F("hh2_largeICdiff_all","hh2_largeICdiff_all",171,-85,86,360,1,361);
-  
-  vector<string> inputfileStat; 
-  inputfileStat.push_back("calibres1/deriveCalibConst.dflag2.pe1.step3.iter11.root");
-  inputfileStat.push_back("calibres1/deriveCalibConst.dflag3.pe2.step3.iter11.root");
+
   
   
   TH1F *hh_res_ieta[50][4];////[4] means the stat error.
@@ -656,7 +655,6 @@ void combineCalibConstantv2(){
     hh_statErr_ietaAbs_period[j]=new TH1F(filename.c_str(),filename.c_str(),85,1,86);
   }
   
-  cout<<"sddf" <<endl; 
   
   ///using MC-based forumula + 0.5/1 % sys.
   // 7.4/resolution * 17 /sqrt(N) * sqrt( 1+ 1.8/sob) + 0.5/1% 
@@ -677,7 +675,6 @@ void combineCalibConstantv2(){
     }
   }
   
-  cout<<"calc stat err " <<endl; 
   
   for(int j=0; j< int(inputfileStat.size());j++){
 
