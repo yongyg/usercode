@@ -9,7 +9,6 @@ TRandom3 *rgen_;
 #include "usefullcode.cc"
 
 float interCalib_preCalib[170][360];
-float interCalib_preCalibTrue[170][360];
 float interCalibEndcap_preCalib[2][101][101];
 
 void copyConstant(float c1[170][360], float c2[170][360]){
@@ -200,88 +199,36 @@ void combineCalibConstantv2(){
   
   
 
-  readInterCalibConstEBSimple("interCalibEB_GR_R_42_V13.txt",interCalib_preCalib); ///2010IC
+  readInterCalibConstEBSimple("interCalibEB_GR_P_V39.txt",interCalib_preCalib); 
   
 
-  ///pre-calibration constants 
-  readInterCalibConstEBSimple("interCalib_GR09_H_V6OFF_barrel.txt",interCalib_preCalibTrue);
   
-
   map<int, string> smScaleFiles; 
 
-  //7 Sets IC
-  /// 160404to166923
-  /// 166946to167913
-  /// 169985to172630
-  /// 172635to172791
-  /// 175832to176929
-  /// 176933to177878
-  /// 178003to180252
+
   
   
   //SM-scale files Pi0 
-  smScaleFiles[0] = "calibres/deriveCalibConst.testCalibv1.dflag60.pe1.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[1] = "calibres/deriveCalibConst.testCalibv1.dflag61.pe1.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[2] = "calibres/deriveCalibConst.testCalibv1.dflag62.pe1.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[3] = "calibres/deriveCalibConst.testCalibv1.dflag63.pe1.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[4] = "calibres/deriveCalibConst.testCalibv1.dflag72.pe1.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[5] = "calibres/deriveCalibConst.testCalibv1.dflag73.pe1.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[6] = "calibres/deriveCalibConst.testCalibv1.dflag64.pe1.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
   
-  //SM-scale files Eta
-  smScaleFiles[7] = "calibres/deriveCalibConst.testCalibv1.dflag250.pe2.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[8] = "calibres/deriveCalibConst.testCalibv1.dflag251.pe2.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[9] = "calibres/deriveCalibConst.testCalibv1.dflag252.pe2.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[10] = "calibres/deriveCalibConst.testCalibv1.dflag253.pe2.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[11] = "calibres/deriveCalibConst.testCalibv1.dflag227.pe2.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[12] = "calibres/deriveCalibConst.testCalibv1.dflag228.pe2.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  smScaleFiles[13] = "calibres/deriveCalibConst.testCalibv1.dflag254.pe2.cut0.rmOvlap0.step1.method1.corrEta-1.corrPhi-1.corrSM0.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root";
-  
-
-  // number of ICs
-  int nIC = 7; 
+  smScaleFiles[0] = "../Pi0Calibration/Barrel/calibres/deriveCalibConst.dflag2.pe1.step1.iter1.root";
+  smScaleFiles[1] = "../Pi0Calibration/Barrel/calibres/deriveCalibConst.dflag3.pe2.step1.iter1.root";
+ 
+  // number of IC periods
+  int nIC = 1; 
   
 
 
   map<int,string> icFiles; 
   
   //IC Pi0 
-  icFiles[0] = "calibres/deriveCalibConst.testCalibv1.dflag60.pe1.cut0.rmOvlap0.step25.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[1] = "calibres/deriveCalibConst.testCalibv1.dflag61.pe1.cut0.rmOvlap0.step25.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[2] = "calibres/deriveCalibConst.testCalibv1.dflag62.pe1.cut0.rmOvlap0.step25.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[3] = "calibres/deriveCalibConst.testCalibv1.dflag63.pe1.cut0.rmOvlap0.step25.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[4] = "calibres/deriveCalibConst.testCalibv1.dflag72.pe1.cut0.rmOvlap0.step25.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[5] = "calibres/deriveCalibConst.testCalibv1.dflag73.pe1.cut0.rmOvlap0.step25.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[6] = "calibres/deriveCalibConst.testCalibv1.dflag64.pe1.cut0.rmOvlap0.step25.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  
+  icFiles[0] = "../Pi0Calibration/Barrel/calibres/deriveCalibConst.dflag2.pe1.step4.iter30.txt";
   //IC Eta 
-  icFiles[7] = "calibres/deriveCalibConst.testCalibv1.dflag250.pe2.cut0.rmOvlap0.step45.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[8] = "calibres/deriveCalibConst.testCalibv1.dflag251.pe2.cut0.rmOvlap0.step45.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[9] = "calibres/deriveCalibConst.testCalibv1.dflag252.pe2.cut0.rmOvlap0.step45.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[10] = "calibres/deriveCalibConst.testCalibv1.dflag253.pe2.cut0.rmOvlap0.step45.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[11] = "calibres/deriveCalibConst.testCalibv1.dflag227.pe2.cut0.rmOvlap0.step45.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[12] = "calibres/deriveCalibConst.testCalibv1.dflag228.pe2.cut0.rmOvlap0.step45.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  icFiles[13] = "calibres/deriveCalibConst.testCalibv1.dflag254.pe2.cut0.rmOvlap0.step45.method2.corrEta21.corrPhi11.corrSM1.corrDead1.precalib1.vtx1.encorr0.evtNot-1.trig0.txt";
-  
+  icFiles[1] = "../Pi0Calibration/Barrel/calibres/deriveCalibConst.dflag3.pe2.step4.iter30.txt";
   
   //crystal dead flag
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag60.txt",ndeadflagietaiphi_ic[0]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag61.txt",ndeadflagietaiphi_ic[1]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag62.txt",ndeadflagietaiphi_ic[2]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag63.txt",ndeadflagietaiphi_ic[3]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag72.txt",ndeadflagietaiphi_ic[4]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag73.txt",ndeadflagietaiphi_ic[5]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag64.txt",ndeadflagietaiphi_ic[6]); 
-  
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag250.txt",ndeadflagietaiphi_ic[7]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag251.txt",ndeadflagietaiphi_ic[8]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag252.txt",ndeadflagietaiphi_ic[9]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag253.txt",ndeadflagietaiphi_ic[10]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag227.txt",ndeadflagietaiphi_ic[11]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag228.txt",ndeadflagietaiphi_ic[12]); 
-  getCrystaldeadflagBarrel_v1("deadflag/crystal_deadflag_eb_dflag254.txt",ndeadflagietaiphi_ic[13]); 
-  
-  
+  getCrystaldeadflagBarrel_v1("../Pi0Calibration/Barrel/crystal_deadflag_eb_dflag2.txt",ndeadflagietaiphi_ic[0]); 
+  getCrystaldeadflagBarrel_v1("../Pi0Calibration/Barrel/crystal_deadflag_eb_dflag3.txt",ndeadflagietaiphi_ic[1]); 
+
   ofstream txtoutTocheck("combinedCalibConstantv2.txt");
     
   
@@ -311,287 +258,16 @@ void combineCalibConstantv2(){
   //   float icwt2[170][360];
   
   
-  /// ieta -21 to -15 iph 280 to 290 
-  bool fixTempTT = true;  ///this is a fix-me by hand, not elegant, be careful!
-  
-  // ieta -30 to -25, iphi  165 to 171
-  // ieta -81 to -75, iphi  300 to 310
-    
-  
+
   for(int n=0; n< nConstantSet; n++){
     string filename = smScaleFiles[n];
     TFile *ff = new TFile(filename.c_str(),"read");
-    TH1F *hhtmp = (TH1F*)ff->Get("hh_corr_smv2");
+    TH1F *hhtmp = (TH1F*)ff->Get("hh_corr_sm");
     hh_smscales[n] = hhtmp;
     
     filename = icFiles[n];
 
     readInterCalibConstEBSimplev1(filename.c_str(),cc);
-    
-    
-    if( fixTempTT){
-      
-      float meanTemp = 0; 
-      int nTemp = 0; 
-      float meanTemp2 =0; 
-      int nTemp2 = 0; 
-            
-      
-      float meanTemp3=0; 
-      int nTemp3 = 0; 
-      float meanTemp4=0; 
-      int nTemp4 = 0; 
-      
-      
-      float meanTemp5=0; 
-      int nTemp5 = 0; 
-      float meanTemp6=0; 
-      int nTemp6 = 0; 
-            
-      
-      float meanTemp7=0; 
-      int nTemp7 = 0; 
-      float meanTemp8=0; 
-      int nTemp8 = 0; 
-
-      
-      for(int j=0; j< 170; j++){
-	for(int k=0; k< 360; k++){
-	  int ieta = j-85; 
-	  if( ieta >=0) ieta += 1; 
-	  int iphi = k; 
-	  if( k==0) iphi = 360; 
-	  	  
-
-	  ////<<<<<<<
-	  if( (ieta == 35 && iphi >= 311 && iphi <= 315) || 
-	      (ieta == 41 && iphi >= 311 && iphi <= 315) || 
-	      (ieta >= 36 && ieta <= 40 && iphi == 310 ) || 
-	      (ieta >= 36 && ieta <= 40 && iphi == 316 )
-	      ){
-	    if( cc[j][k] >0){
-	      meanTemp7 += cc[j][k]; 
-	      nTemp7 ++; 
-	    }
-	  }
-	  if( (ieta== 35 &&  iphi == 310) || 
-	      (ieta== 35 &&  iphi == 316) || 
-	      (ieta== 41 &&  iphi == 310) || 
-	      (ieta== 41 &&  iphi == 316) ){
-	    if( cc[j][k] >0){
-	      meanTemp8 += cc[j][k]; 
-	      nTemp8 ++; 
-	    }
-	  }
-	  ////>>>>>>>
-	  
-	  
-	  ////<<<<<<<
-	  if( (ieta == -81 && iphi >= 301 && iphi <= 310) || 
-	      (ieta == -75 && iphi >= 301 && iphi <= 310) || 
-	      (ieta >= -80 && ieta <= -76 && iphi == 300 ) || 
-	      (ieta >= -80 && ieta <= -76 && iphi == 311 )
-	      ){
-	    if( cc[j][k] >0){
-	      meanTemp5 += cc[j][k]; 
-	      nTemp5 ++; 
-	    }
-	  }
-	  if( (ieta== -81 &&  iphi == 300) || 
-	      (ieta== -81 &&  iphi == 311) || 
-	      (ieta== -75 &&  iphi == 300) || 
-	      (ieta== -75 &&  iphi == 311) ){
-	    if( cc[j][k] >0){
-	      meanTemp6 += cc[j][k]; 
-	      nTemp6 ++; 
-	    }
-	  }
-	  ////>>>>>>>
-	  	  
-	  
-	  ////<<<<<<<
-	  if( (ieta == -31 && iphi >= 166 && iphi <= 170) || 
-	      (ieta == -25 && iphi >= 166 && iphi <= 170) || 
-	      (ieta >= -30 && ieta <= -26 && iphi == 165 ) || 
-	      (ieta >= -30 && ieta <= -26 && iphi == 171 )
-	      ){
-	    if( cc[j][k] >0){
-	      meanTemp3 += cc[j][k]; 
-	      nTemp3 ++; 
-	    }
-	  }
-	  if( (ieta== -31 &&  iphi == 165) || 
-	      (ieta== -31 &&  iphi == 171) || 
-	      (ieta== -25 &&  iphi == 165) || 
-	      (ieta== -25 &&  iphi == 171) ){
-	    if( cc[j][k] >0){
-	      meanTemp4 += cc[j][k]; 
-	      nTemp4 ++; 
-	    }
-	  }
-	  ////>>>>>>>
-	  
-  
-	  ////<<<<<<<
-	  if( (ieta == -21 && iphi >= 281 && iphi <= 290) || 
-	      (ieta == -15 && iphi >= 281 && iphi <= 290) || 
-	      (ieta >= -20 && ieta <= -16 && iphi == 280 ) || 
-	      (ieta >= -20 && ieta <= -16 && iphi == 291 )
-	      ){
-	    if( cc[j][k] >0){
-	      meanTemp += cc[j][k]; 
-	      nTemp ++; 
-	    }
-	    
-	  }
-
-	  if( (ieta== -21 &&  iphi == 291) || 
-	      (ieta== -21 &&  iphi == 280) || 
-	      (ieta== -15 &&  iphi == 280) || 
-	      (ieta== -15 &&  iphi == 291) ){
-	    
-	    if( cc[j][k] > 0){
-	      meanTemp2 += cc[j][k]; 
-	      nTemp2 ++; 
-	    }
-	  }
-	  ////>>>>>>>
-	  
-	  
-	}
-      }
-            
-      
-      
-      if( n==2 || n==3 || n==9 || n==10){
-	meanTemp5 /= nTemp5;
-	meanTemp6 /= nTemp6;
-	cout<<" meanTemp5 6 " << meanTemp5 <<" "<<meanTemp6 <<endl; 
-	
-	for(int j=0; j< 170; j++){
-	  for(int k=0; k< 360; k++){
-	    int ieta = j-85; 
-	    if( ieta >=0) ieta += 1; 
-	    int iphi = k; 
-	    if( k==0) iphi = 360; 
-	    
-	    if( (ieta == -81 && iphi >= 301 && iphi <= 310) || 
-		(ieta == -75 && iphi >= 301 && iphi <= 310) || 
-		(ieta >= -80 && ieta <= -76 && iphi == 300 ) || 
-		(ieta >= -80 && ieta <= -76 && iphi == 311 )
-		){
-	      if( cc[j][k] >0){
-		cc[j][k] /= meanTemp5;
-	      }
-	    }
-	    if( (ieta== -81 &&  iphi == 300) || 
-		(ieta== -81 &&  iphi == 311) || 
-		(ieta== -75 &&  iphi == 300) || 
-		(ieta== -75 &&  iphi == 311) ){
-	      if( cc[j][k] >0){
-		cc[j][k] /= meanTemp6;
-	      }
-	    }
-	  }
-	}
-      }
-      
-      
-      if( n==0 || n==1  || n==2 || n==3 || n ==4 || n==5  || n==6 || n==7 || n==8 || n==9 || n==10|| n== 11 || n== 12 || n== 13){
-	meanTemp3 /= nTemp3;
-	meanTemp4 /= nTemp4;
-	cout<<" meanTemp3 4 " << meanTemp3 <<" "<<meanTemp4 <<endl; 
-
-	for(int j=0; j< 170; j++){
-	  for(int k=0; k< 360; k++){
-	    int ieta = j-85; 
-	    if( ieta >=0) ieta += 1; 
-	    int iphi = k; 
-	    if( k==0) iphi = 360; 
-	    
-	    if( (ieta == -31 && iphi >= 166 && iphi <= 170) || 
-		(ieta == -25 && iphi >= 166 && iphi <= 170) || 
-		(ieta >= -30 && ieta <= -26 && iphi == 165 ) || 
-		(ieta >= -30 && ieta <= -26 && iphi == 171 )
-		){
-	      if( cc[j][k] >0){
-		cc[j][k] /= meanTemp3;
-	      }
-	    }
-	    if( (ieta== -31 &&  iphi == 165) || 
-		(ieta== -31 &&  iphi == 171) || 
-		(ieta== -25 &&  iphi == 165) || 
-		(ieta== -25 &&  iphi == 171) ){
-	      if( cc[j][k] >0){
-		cc[j][k] /= meanTemp4;
-	      }
-	    }
-	  }
-	}
-      }
-      
-
-
-      if( n==4 || n==5 || n== 11 || n==12){ ///September
-	meanTemp /= nTemp;
-	meanTemp2 /=nTemp2; 
-	meanTemp7 /= nTemp7;
-	meanTemp8 /= nTemp8;
-	cout<<" meanTemp " << meanTemp <<" "<<meanTemp2 <<" "<< meanTemp7 <<" "<< meanTemp8<<endl; 
-	
-	
-	for(int j=0; j< 170; j++){
-	  for(int k=0; k< 360; k++){
-	    int ieta = j-85; 
-	    if( ieta >=0) ieta += 1; 
-	    int iphi = k; 
-	    if( k==0) iphi = 360; 
-	  
-	    if( (ieta == -21 && iphi >= 281 && iphi <= 290) || 
-		(ieta == -15 && iphi >= 281 && iphi <= 290) || 
-		(ieta >= -20 && ieta <= -16 && iphi == 280 ) || 
-		(ieta >= -20 && ieta <= -16 && iphi == 291 )
-		){
-	      if( cc[j][k] >0){
-		cc[j][k] /= meanTemp;
-	      }
-	    }
-	    
-	    if( (ieta== -21 &&  iphi == 291) || 
-		(ieta== -21 &&  iphi == 280) || 
-		(ieta== -15 &&  iphi == 280) || 
-		(ieta== -15 &&  iphi == 291) ){
-	      if( cc[j][k] > 0){
-		cc[j][k] /= meanTemp2;
-	      }
-	    }
-	    
-	    if( (ieta == 35 && iphi >= 311 && iphi <= 315) || 
-		(ieta == 41 && iphi >= 311 && iphi <= 315) || 
-		(ieta >= 36 && ieta <= 40 && iphi == 310 ) || 
-		(ieta >= 36 && ieta <= 40 && iphi == 316 )
-		){
-	      if( cc[j][k] >0){
-		cc[j][k] /= meanTemp7;
-	      }
-	    }
-	    if( (ieta== 35 &&  iphi == 310) || 
-		(ieta== 35 &&  iphi == 316) || 
-		(ieta== 41 &&  iphi == 310) || 
-		(ieta== 41 &&  iphi == 316) ){
-	      if( cc[j][k] >0){
-		cc[j][k] /= meanTemp8;
-	      }
-	    }
-	    
-	  }
-	}
-	
-      }
-      
-    }
-    
-    
   
     for(int j=0; j< 170; j++){
       for(int k=0; k< 360; k++){
@@ -637,6 +313,8 @@ void combineCalibConstantv2(){
     }
   }
   
+  cout<<"sddd" <<endl; 
+
   
   TH1F *hh_c_ieta[50][170];
   TH1F *hh_c_ietaAbs[50][85];
@@ -647,6 +325,7 @@ void combineCalibConstantv2(){
   TH1F *hh_csmtb_ietaTT[50][34];
   TH1F *hh_csmtb_ietaTTAbs[50][17];
   TH1F *hh_csmco_ietaTTAbs[50][17];
+
   TH1F *hh_csmco_ietaTT[50][34];
 
   TH1F *hh_csmall_ietaTTAbs[50][17];
@@ -727,7 +406,7 @@ void combineCalibConstantv2(){
     }
   }
 
-  
+  cout<<"sdddd" <<endl; 
     
   
   TH1F *hh_res_cietaAbs_period[50][3];
@@ -840,7 +519,7 @@ void combineCalibConstantv2(){
     }
   }
   
-  
+  cout<<"sddda" <<endl; 
   
 
   for(int j=0; j< nConstantSet; j++){
@@ -850,6 +529,11 @@ void combineCalibConstantv2(){
       hh_res_csmtbietaTT[j][k] = new TH1F(histname,histname,34,xbinLow);
       histname = TString(Form("hh_res_csmtbietaTTAbs_%d_%d",j,k));
       hh_res_csmtbietaTTAbs[j][k] = new TH1F(histname,histname,17,xbinLow1);
+
+      
+      histname = TString(Form("hh_res_csmallietaTTAbs_%d_%d",j,k));
+      hh_res_csmallietaTTAbs[j][k] = new TH1F(histname,histname,17,xbinLow1);
+      
       
       histname = TString(Form("hh_res_csmcoietaTT_%d_%d",j,k));
       hh_res_csmcoietaTT[j][k] = new TH1F(histname,histname,34,xbinLow);
@@ -883,6 +567,8 @@ void combineCalibConstantv2(){
   TH1F *hh_res_diff_csmallietaTT[50][50][3];
   TH1F *hh_res_diff_csmallietaTTAbs[50][50][3];
   
+  cout<<"sdddb" <<endl; 
+
   for(int n=0; n< nConstantSet; n++){
     for(int k=n+1; k< nConstantSet; k++){
       TString histname = TString (Form("hh2_diff_%dand%d",n,k));
@@ -932,7 +618,8 @@ void combineCalibConstantv2(){
       
     }
   }
-  
+
+  cout<<"sddde" <<endl; 
 
   TH2F *hh2_largeICdiff[50][50];
   for(int n=0; n< nIC; n++){
@@ -944,39 +631,32 @@ void combineCalibConstantv2(){
   TH2F *hh2_largeICdiff_all =new TH2F("hh2_largeICdiff_all","hh2_largeICdiff_all",171,-85,86,360,1,361);
   
   vector<string> inputfileStat; 
-
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag60.pe1.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag61.pe1.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag62.pe1.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag63.pe1.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag72.pe1.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag73.pe1.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag64.pe1.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag250.pe2.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag251.pe2.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag252.pe2.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag253.pe2.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag227.pe2.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag228.pe2.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
-  inputfileStat.push_back("calibres/deriveCalibConst.testCalibv1.dflag254.pe2.cut0.rmOvlap0.step11.method1.corrEta21.corrPhi10.corrSM1.corrDead-1.precalib1.vtx1.encorr0.evtNot-1.trig0.root");
+  inputfileStat.push_back("calibres1/deriveCalibConst.dflag2.pe1.step3.iter11.root");
+  inputfileStat.push_back("calibres1/deriveCalibConst.dflag3.pe2.step3.iter11.root");
   
   
-  TH1F *hh_res_ietaTTAbs[50][5];////[4] means the stat error.
+  TH1F *hh_res_ieta[50][4];////[4] means the stat error.
   
   for(int n=0; n< int(inputfileStat.size()); n++){
     for(int k=0;k<5;k++){
-      string filename = string(Form("hh_res_ietaTTAbs_%d_%d",n,k));
-      hh_res_ietaTTAbs[n][k] =new TH1F(filename.c_str(),filename.c_str(),17,xbinLow1);
+      string filename = string(Form("hh_res_ieta_%d_%d",n,k));
+      hh_res_ieta[n][k] =new TH1F(filename.c_str(),filename.c_str(),171,-85,86);
     }
   }
-
-  TH1F *hh_statErr_ietaTTAbs_period[50]; //pi0&eta combined for each period
-  for(int j=0; j< nIC; j++){
-    string filename = string(Form("hh_statErr_ietaTTAbs_period_%d",j));
-    hh_statErr_ietaTTAbs_period[j]=new TH1F(filename.c_str(),filename.c_str(),17,xbinLow1);
+  TH1F *hh_statErr_ietaAbs[50];
+  for(int n=0; n< int(inputfileStat.size()); n++){
+    string filename = string(Form("hh_statErr_ietaAbs_%d",n));
+    hh_statErr_ietaAbs[n] =new TH1F(filename.c_str(),filename.c_str(),85,1,86);
   }
   
+
+  TH1F *hh_statErr_ietaAbs_period[50]; //pi0&eta combined for each period
+  for(int j=0; j< nIC; j++){
+    string filename = string(Form("hh_statErr_ietaAbs_period_%d",j));
+    hh_statErr_ietaAbs_period[j]=new TH1F(filename.c_str(),filename.c_str(),85,1,86);
+  }
+  
+  cout<<"sddf" <<endl; 
   
   ///using MC-based forumula + 0.5/1 % sys.
   // 7.4/resolution * 17 /sqrt(N) * sqrt( 1+ 1.8/sob) + 0.5/1% 
@@ -986,22 +666,36 @@ void combineCalibConstantv2(){
     string filename = inputfileStat[j];
     TFile *f1 = new TFile(filename.c_str(),"read");
     for(int k=0;k<4;k++){
-      string histname = string (Form("hh_res_ietaTTAbs_%d",k));
+      string histname = string (Form("hh_res_ieta_%d",k));
       TH1F *hhtmp = (TH1F*)f1->Get(histname.c_str());
-      hh_res_ietaTTAbs[j][k]->Add(hhtmp);
+      if(hhtmp==0){
+	cout<<"empty hh_res_ieta_ ! "<<endl; 
+	return; 
+      }
+      
+      hh_res_ieta[j][k]->Add(hhtmp);
     }
   }
   
+  cout<<"calc stat err " <<endl; 
+  
   for(int j=0; j< int(inputfileStat.size());j++){
 
-    for(int n=0; n< 17; n++){
-      float npiz = hh_res_ietaTTAbs[j][1]->GetBinContent(n+1)*0.5/(360*10) ; 
-      float sob = hh_res_ietaTTAbs[j][2]->GetBinContent(n+1);
-      float reso = hh_res_ietaTTAbs[j][3]->GetBinContent(n+1)/hh_res_ietaTTAbs[j][0]->GetBinContent(n+1) * 100;
+    for(int n=1; n<=85 ; n++){
+      float npiz = 0.5*(hh_res_ieta[j][1]->GetBinContent(87+n-1) + hh_res_ieta[j][1]->GetBinContent(85-(n-1)) ) /(360*2) ; 
+      float sob = 0.5*(hh_res_ieta[j][3]->GetBinContent(87+n-1) + hh_res_ieta[j][3]->GetBinContent(85-(n-1)) );
+      float reso = 0.5*(hh_res_ieta[j][2]->GetBinContent(87+n-1) + hh_res_ieta[j][2]->GetBinContent(85-(n-1)) )/hh_res_ieta[j][0]->GetBinContent(87+n-1);
+
+      if(npiz<=0){
+	cout<<"empty histogram!!" <<endl; 
+	return; 
+      }
+      
       float statErr = reso/7.4 * 17/sqrt(npiz) * sqrt( 1+ 1.8/sob); 
-      hh_res_ietaTTAbs[j][4]->SetBinContent(n+1,statErr);
+      hh_statErr_ietaAbs[j]->SetBinContent(n,statErr);
     }
   }
+  
   
   ///the combined IC from all ICs
   ofstream txtout("interCalibConstants.combinedPi0EtaAllPeriod.EcalBarrel.txt",ios::out);
@@ -1022,7 +716,7 @@ void combineCalibConstantv2(){
 
   cout<<"fill" <<endl; 
 
-
+  
   
 
   for(int n=0; n< nConstantSet; n++){
@@ -1079,6 +773,9 @@ void combineCalibConstantv2(){
 	    hh_csmco_ietaTTAbs[n][ietaTTAbs]->Fill(c);
 	    hh_csmco_ietaTT[n][j/5]->Fill(c);
 	  }
+	  
+	  hh_csmall_ietaTTAbs[n][ietaTTAbs]->Fill(c);
+
 	}else{
 	  hh2_c[n]->SetBinContent(beta,bphi,-1);
 	}
@@ -1201,6 +898,16 @@ void combineCalibConstantv2(){
       }
     }
     
+    for(int j=0;j<17; j++){
+      fitHistogram(hh_csmall_ietaTTAbs[k][j],resfit);
+      for(int n=0;n<3; n++){
+	hh_res_csmallietaTTAbs[k][n]->SetBinContent(j+1,resfit[2*n]);
+	hh_res_csmallietaTTAbs[k][n]->SetBinError(j+1,resfit[2*n+1]);
+      }
+    }
+    
+    
+
     for(int j=0;j<34; j++){
       fitHistogram(hh_csmco_ietaTT[k][j],resfit);
       for(int n=0;n<3; n++){
@@ -1271,7 +978,7 @@ void combineCalibConstantv2(){
 	
 
 	//now use MC-predicted precision
-	statErr = hh_res_ietaTTAbs[n][4]->GetBinContent(ietaTTAbs+1);
+	statErr = hh_res_ieta[n][4]->GetBinContent(87+abs(ieta)-1);
 	
 	float sigma = sqrt( statErr * statErr + sysErr * sysErr);
 	
@@ -1285,34 +992,6 @@ void combineCalibConstantv2(){
 	  
 	  wtSumC_period[nperiod] += tmp1; 
 	  wtSumS_period[nperiod] += tmp2; 
-	  
-	  
-	  ////// Set by hand, for some crystals'IC, not used for combination 
-	  if( n==4 || n==11 || n==5 || n== 12){ ////  fix by hand September 's IC  in a region ( deadflag txt file was wrong  ) 
-	    //set by hand those to be -1 for combination, including +2 crystals next to the "dead region"
-	    if( (ieta >=-22 && ieta <= -12) && 
-		(iphi >=279 && iphi <= 292 )
-		){
-	      c = -1; 
-	    }
-	  }
-	  if( n==4 || n==11 || n==5 || n== 12){  ///one more TT
-	    if( (ieta >=35 && ieta <= 41) && 
-		(iphi >=310 && iphi <= 316 )
-		){
-	      c = -1; 
-	    }
-	  }
-	  if( n==0 || n==1  || n==2 || n==3 || n ==4 || n==6 || n==7 || n==8 || n==9 || n==10|| n== 11 || n== 13){ //using only 5 and 12 for combination
-	    if( ieta >= -31 && ieta <= -25 && iphi >= 165 && iphi <= 171){
-	      c = -1; 
-	    }
-	  }
-	  if( n==2  || n==3 || n==9 || n==10){
-	    if( ieta >= -81 && ieta <= -75 && iphi >= 300 && iphi <= 311){
-	      c = -1; 
-	    }
-	  }
 	  
 	  if( c> 0){ //all combined
 	    wtSumC += tmp1; 
@@ -1347,28 +1026,28 @@ void combineCalibConstantv2(){
 
   float statErr_allCombined[85] = {0} ; 
   
-  for(int b=1; b<= hh_res_ietaTTAbs[0][4]->GetNbinsX(); b++){
+  for(int b=1; b<= hh_statErr_ietaAbs[0]->GetNbinsX(); b++){
     float sumStatErr2 = 0; 
     for(int n=0; n< nConstantSet; n++){
-      float statErr = hh_res_ietaTTAbs[n][4]->GetBinContent(b);
+      float statErr = hh_statErr_ietaAbs[n]->GetBinContent(b);
       sumStatErr2 += 1./ ( statErr * statErr );
     }
     float statErr = sqrt( 1./ sumStatErr2 ); 
     statErr_allCombined[b-1] = statErr; 
     
-    cout<<" statErr_allCombined " << b <<" "<< statErr_allCombined[b-1] << " % "<<endl; 
+    cout<<" statErr_allCombined " << b <<" "<< statErr_allCombined[b-1]*100 << " % "<<endl; 
 
   }
   
 
   ///Stat error for each period
   for(int j=0; j< nIC; j++){
-    for(int b=1; b<= hh_res_ietaTTAbs[j][4]->GetNbinsX();b++){
-      float statErrPi0 = hh_res_ietaTTAbs[j][4]->GetBinContent(b);
-      float statErrEta = hh_res_ietaTTAbs[j+nIC][4]->GetBinContent(b);
+    for(int b=1; b<= hh_statErr_ietaAbs[0]->GetNbinsX();b++){
+      float statErrPi0 =  hh_statErr_ietaAbs[j]->GetBinContent(b);
+      float statErrEta =  hh_statErr_ietaAbs[j+nIC]->GetBinContent(b);
       float statErr = 1/(statErrPi0*statErrPi0) + 1./(statErrEta*statErrEta);
       statErr = sqrt(1/statErr);
-      hh_statErr_ietaTTAbs_period[j]->SetBinContent(b,statErr);
+      hh_statErr_ietaAbs_period[j]->SetBinContent(b,statErr);
     }
   }
   
@@ -1379,6 +1058,9 @@ void combineCalibConstantv2(){
     
     int ieta = j-85; 
     if( ieta >=0) ieta += 1; 
+    
+   
+    int absieta = abs(ieta);
     
     for(int k=0; k<360; k++){
       int iphi = k; 
@@ -1408,8 +1090,8 @@ void combineCalibConstantv2(){
 	  if( icwt_period[n1][j][k]>0 && icwt_period[n2][j][k]>0){
 	    float reldiff = fabs( icwt_period[n1][j][k] - icwt_period[n2][j][k] )/ ( 0.5* (icwt_period[n1][j][k] + icwt_period[n2][j][k])); 
 
-	    float statErr1 = hh_statErr_ietaTTAbs_period[n1]->GetBinContent(ietaTTAbs+1)/100;
-	    float statErr2 = hh_statErr_ietaTTAbs_period[n2]->GetBinContent(ietaTTAbs+1)/100;
+	    float statErr1 = hh_statErr_ietaAbs_period[n1]->GetBinContent(absieta)/100;
+	    float statErr2 = hh_statErr_ietaAbs_period[n2]->GetBinContent(absieta)/100;
 	    
 	    ////assuming same sys.
 	    float diff_statErr = sqrt( statErr1*statErr1 + statErr2*statErr2);
@@ -1512,12 +1194,10 @@ void combineCalibConstantv2(){
 	      exit(1);
 	    }
 	    hh_c_deadflag_period[n][deadflag]->Fill(icwt_period[n][j][k]);
-	    hh_cc_deadflag_period[n][deadflag]->Fill(icwt_period[n][j][k] * interCalib_preCalibTrue[j][k]);
-	    hh_cc1_deadflag_period[n][deadflag]->Fill(interCalib_preCalibTrue[j][k]);
+
 	    if(deadflag>0){
 	      hh_c_deadflag_period[n][19]->Fill(icwt_period[n][j][k]);
 	      hh_cc_deadflag_period[n][19]->Fill( interCalib_preCalib[j][k] * icwt_period[n][j][k]); 
-	      hh_cc1_deadflag_period[n][19]->Fill( interCalib_preCalibTrue[j][k]);
 	    }
 	    
 	  }
@@ -1546,7 +1226,7 @@ void combineCalibConstantv2(){
             
 
       for(int n=0; n< nIC; n++){ ///for each period
-	statErr = hh_statErr_ietaTTAbs_period[n]->GetBinContent(ietaTTAbs+1); 
+	statErr = hh_statErr_ietaAbs_period[n]->GetBinContent(absieta); 
 	icErr = sqrt( statErr * statErr + sysErr * sysErr);
 	icErr /= 100;
 	
