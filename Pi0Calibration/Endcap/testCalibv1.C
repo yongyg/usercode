@@ -333,8 +333,6 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
 	  CORSUM[izz][ieta][iphi] += pow(wt,2) * pow( meanMass/ mpair_new,2);
 	}
       }
-      
-      float testsum2 = 0;
       for(Int_t ixtal=0; ixtal  < nxtClus2; ixtal++){
 	int ieta = ietaXtalClus2[ixtal];
 	int iphi = iphiXtalClus2[ixtal];

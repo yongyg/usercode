@@ -9,7 +9,7 @@ endif
 cmsenv
 which root
 set checkroot =  `which root |grep not |grep found |wc |gawk '{print $1}'`
-if($checkroot == 0) then
+if($checkroot == 1) then
 echo "no ROOT! quit and cmsenv "
 exit
 endif

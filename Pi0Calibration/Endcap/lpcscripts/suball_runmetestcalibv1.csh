@@ -25,7 +25,7 @@ set filesize = `ls $filename.txt  -l |gawk '{print $5}' `
 if( $filesize > 10000) then
 #set filesizeroot = `ls $filename.root  -l |gawk '{print $5}' `
 #if( $filesizeroot > 5000) then
-#echo "job already done step$step iter$iter evtRange$r"
+echo "job already done $filename.txt"
 @ r++
 continue
 endif
