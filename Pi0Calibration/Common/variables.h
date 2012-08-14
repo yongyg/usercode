@@ -21,6 +21,8 @@ Float_t         ptmin; // minimal pt of two photons
 Float_t         isolation; // isolation variable 
 Float_t         vBeamSpot[3]; // beam spot x,y, z 
 Float_t         s4s9min; /// minimal s4/s9 of two photons 
+Float_t         s9s25min; /// minimal s9/s25 of two photons 
+
 Float_t         xClus1; /// X position of 3x3 cluster 1 
 Float_t         yClus1;
 Float_t         zClus1;
@@ -88,11 +90,17 @@ const int kEndcEtaRings = 39;
 float eta_ring_ee[kEndcEtaRings];
 float etaBoundary_ee[kEndcEtaRings+1];
 int nxtal_ring_ee[kEndcEtaRings];
-
-
-///calibration constant fro endcap
 double corrfactorEtaRings[2][kEndcEtaRings]; 
 double corrfactoriZiXiY[2][101][101];
+float etaBoundary_eezside[2][kEndcEtaRings+1];
+float eta_ring_eezside[2][kEndcEtaRings];
+float infoESX[2][8];
+float infoESY[2][8];
+double peakwidthEtaRings[2][kEndcEtaRings];
+float sigma_sideRing[2][40];
+float mean_side[2] = {0.1264,0.1244};
+float sigma_side[2] = {0.02,0.02};
+int validRecHitEndCap[2][101][101];
 
 
 int flag_ietaiphi[170][360];
@@ -111,8 +119,13 @@ double corrfactorDead[20] ;
 /* bool is2011RunA; */
 
 int nCounted[170][360][100];
+int nCountedEE[2][101][101][100];
 
 float sigmaMass;
 float meanMass;
 
 string workingDirectory;
+
+
+///for endcaps
+int nMaxRingIC;
