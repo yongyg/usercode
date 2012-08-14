@@ -14,7 +14,6 @@ echo "no ROOT! quit and cmsenv "
 exit
 endif
 
-
 set username = `whoami`
 
 set evtRangeTot =  $1
@@ -54,13 +53,13 @@ set checkifthisjobdone = `tail $filename.txt |grep totalEntries |wc |gawk '{prin
 if($checkifthisjobdone == 1) then
 set evtProcessed = `tail $filename.txt |grep totalEntries | gawk '{print $4}'`
 endif
-if(-e $filename.root) then
-set filesizeroot = `ls $filename.root -l |gawk '{print $5}'`
-endif
+#if(-e $filename.root) then
+#set filesizeroot = `ls $filename.root -l |gawk '{print $5}'`
+#endif
 endif
 
 ##check job done correctly 
-if( $filesize > 10000 && $filesizeroot > 5000 && $checkifthisjobdone > 0 && $evtProcessed > 0 ) then
+if( $filesize > 10000  && $checkifthisjobdone > 0 && $evtProcessed > 0 ) then
 set donejobrange = ${donejobrange}ar${evtRange}a
 @ nfound ++ 
 endif

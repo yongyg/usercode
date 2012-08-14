@@ -301,7 +301,9 @@ void deriveCalibConst(int test_dataflag,int test_pizEta, int test_calibStep, int
 	for(int k=0; k< 101; k++){
 	  if( validRecHitEndCap[iz][j][k] <1) continue;
 	  double tmp = -1; 
-	  if( WTSUM[iz][j][k] > 0){
+	  
+	  int ietaRing = iRingEndCap(2*iz-1,j,k);
+	  if( WTSUM[iz][j][k] > 0 && ietaRing <= nMaxRingIC ){
 	    tmp = corrfactoriZiXiY[iz][j][k] * CORSUM[iz][j][k]/ WTSUM[iz][j][k];
 	  }
 	  if( j==0 && k<=1){

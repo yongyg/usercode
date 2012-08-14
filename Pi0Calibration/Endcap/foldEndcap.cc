@@ -3,13 +3,11 @@
 ///iz = -1 /1; ix, iy >=1 && <=100; 
 int iRingEndCap(int iz, int ix,int iy){
 
-  if(abs(iz) !=1 ){
-    
-    cout<<"iRingEndcap.."<<iz<<endl;
+  if(abs(iz) !=1 || !(ix>=1&&ix<=100) || !(iy>=1&&iy<=100)){
+    cout<<"iRingEndcap.."<<iz<<" "<<ix <<" "<<iy<<endl; 
     exit(1);
-    
   }
-    
+  
   
   int izz = iz <0? 0: 1; 
 

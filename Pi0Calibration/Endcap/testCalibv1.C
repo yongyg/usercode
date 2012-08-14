@@ -318,7 +318,6 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
     
     if( mpair_new > mean_side[izside] -2.*sigma_side[izside] && mpair_new < mean_side[izside] + 2.*sigma_side[izside] ){
       
-      float testsum1 = 0; 
       for(Int_t ixtal=0; ixtal  < nxtClus1; ixtal++){
 	int ieta = ietaXtalClus1[ixtal];
 	int iphi = iphiXtalClus1[ixtal];
@@ -328,17 +327,11 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
 	if( stepc ==2 ){
 	  en *= corrfactorEtaRings[izz][ietaRing];
 	}
-	testsum1 += en; 
 	double wt = en / ensum1;
 	if( wt >0.01){
 	  WTSUM[izz][ieta][iphi] += pow(wt,2); 
 	  CORSUM[izz][ieta][iphi] += pow(wt,2) * pow( meanMass/ mpair_new,2);
 	}
-	//if(entry % 100000==0) cout<<"wtsum_pht1: "<<WTSUM[izz][ieta][iphi]<<" "<<CORSUM[izz][ieta][iphi]<<endl; 
-      }
-      
-      if(  fabs(testsum1 - ensum1 ) > 0.00001){
-	cout<<"warning ensum1 "<< entry <<" "<< ensum1 <<" "<< testsum1 <<endl; 
       }
       
       float testsum2 = 0;
@@ -352,15 +345,10 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
 	  en *= corrfactorEtaRings[izz][ietaRing];
 	}
 	double wt = en / ensum2;
-	testsum2 += en; 
 	if( wt >0.01){
 	  WTSUM[izz][ieta][iphi] += pow(wt,2); 
 	  CORSUM[izz][ieta][iphi] += pow(wt,2) * pow( meanMass/ mpair_new,2);
 	}
-	//if(entry % 100000==0) cout<<"wtsum_pht2: "<<WTSUM[izz][ieta][iphi]<<" "<<CORSUM[izz][ieta][iphi]<<endl; 
-      }
-      if( fabs(testsum2 - ensum2 ) > 0.00001){
-	cout<<"warning ensum2 "<< entry <<" "<< ensum2 <<" "<< testsum2 <<endl;
       }
       
     }
