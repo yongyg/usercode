@@ -27,13 +27,8 @@ void calcPairClusterUpdated(float CalInput[2][101][101],float res[]){
     int izz = izXtalClus1 <0 ? 0: 1; 
     ext[ixtal] = eXtalClus1[ixtal]*CalInput[izz][ieta][iphi];
     int ietaRing = iRingEndCap(izXtalClus1,ietaXtalClus1[ixtal],iphiXtalClus1[ixtal]); 
-    if( stepc==2 ){
-      ext[ixtal] *= corrfactorEtaRings[izz][ietaRing];
-    }
+    ext[ixtal] *= corrfactorEtaRings[izz][ietaRing];
     msum9[0] += ext[ixtal];
-    
-    if(entry == 100000) cout<<"msum91: "<< ext[ixtal] <<" "<<  msum9[0] <<" "<< eXtalClus1[ixtal]<<" "<<ieta <<" "<<iphi <<" "<< ext[ixtal] <<" "<<corrfactorEtaRings[izz][ietaRing]<<endl; 
-    
     
   } 
   
@@ -61,10 +56,7 @@ void calcPairClusterUpdated(float CalInput[2][101][101],float res[]){
     int izz = izXtalClus2 <0 ? 0: 1; 
     ext[ixtal] = eXtalClus2[ixtal]*CalInput[izz][ieta][iphi];
     int ietaRing = iRingEndCap(izXtalClus2,ietaXtalClus2[ixtal],iphiXtalClus2[ixtal]); 
-    if( stepc==2 ){
-      ext[ixtal] *= corrfactorEtaRings[izz][ietaRing];
-    }
-    if(entry == 100000) cout<<"msum92: "<< ext[ixtal] <<" "<<  msum9[1] <<" "<< eXtalClus2[ixtal]<<" "<<ieta <<" "<<iphi <<" "<< ext[ixtal] <<" "<< corrfactorEtaRings[izz][ietaRing] <<endl; 
+    ext[ixtal] *= corrfactorEtaRings[izz][ietaRing];
     msum9[1] += ext[ixtal];
   } 
   if(msum9[1]<=0 ) {

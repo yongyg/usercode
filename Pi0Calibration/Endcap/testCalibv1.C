@@ -68,7 +68,7 @@ int nbinMax = int(xHighLimit/binwidth + 0.1);
 
 ///for endcap 
 void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test_calibIteration, int test_evtRange){
-  workingDirectory = "MyJobWorkingDirectory";
+  workingDirectory = "/uscms_data/d2/yongy/tmp2/CMSSW_5_2_4/src/Pi0Calibration/Endcap";
   
   doBarrel =2; 
 
@@ -304,8 +304,6 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
     float mpair_new = res[0];
     float ensum1 = res[1];
     float ensum2 = res[2];
-    
-    if(entry % 100000==0) cout<<"mass: "<< res[0] <<" "<< mpair <<" "<< ensum1 <<" "<<ensum2<<" "<< mpair_new <<" "<< endl; 
     
     int bin = int( (mpair_new - xLowLimit )/binwidth); 
     if( mpair_new >= xLowLimit && bin>=0 && bin < nbinMax ){
