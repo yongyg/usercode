@@ -68,7 +68,7 @@ int nbinMax = int(xHighLimit/binwidth + 0.1);
 
 ///for endcap 
 void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test_calibIteration, int test_evtRange){
-  workingDirectory = "/uscms_data/d2/yongy/tmp2/CMSSW_5_2_4/src/Pi0Calibration/Endcap";
+  workingDirectory = "MyJobWorkingDirectory";
   
   doBarrel =2; 
 
