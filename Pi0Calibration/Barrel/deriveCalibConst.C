@@ -242,7 +242,28 @@ void deriveCalibConst(int test_dataflag,int test_pizEta, int test_calibStep, int
       hh_res_ietaSM[j][k] = new TH1F(filename,filename,85,1,86);
     }
   }
+
   
+  float xbinLow[35];
+  for(int j=0; j< 35; j++){
+    float xbin = -85 + 5*j;
+    xbinLow[j] = xbin;
+  }
+  float xbinLow1[35];
+  for(int j=0; j<= 17 ; j++){
+    float xbin =  5 * j;
+    xbinLow1[j] = xbin+1;
+  }
+  TH1F *hh_res_ietaTT[4];
+  TH1F *hh_res_ietaTTAbs[4];
+  for(int j=0; j<4; j++){
+    filename = TString(Form("hh_res_ietaTT_%d",j));
+    hh_res_ietaTT[j] = new TH1F(filename,filename,34,xbinLow);
+    filename = TString(Form("hh_res_ietaTTAbs_%d",j));
+    hh_res_ietaTTAbs[j] = new TH1F(filename,filename,17,xbinLow1);
+  }
+
+
   TH1F *hh_res_ieta[4];
   TH1F *hh_res_ietatb[4];
   TH1F *hh_res_ietaco[4];
@@ -285,7 +306,18 @@ void deriveCalibConst(int test_dataflag,int test_pizEta, int test_calibStep, int
     hh_mpair_sm[j] = new TH1F(filename,filename,nbinMax,xLowLimit,xHighLimit);
   }
   
-
+  ///on each TT or abs(TT)                                                                                                
+  TH1F *hh_mpair_ietaTT[35];
+  TH1F *hh_mpair_ietaTTAbs[17];
+  for(int j=0; j< 35; j++){
+    filename = TString(Form("hh_mpair_ietaTT_%d",j));
+    hh_mpair_ietaTT[j] = new TH1F(filename,filename,nbinMax,xLowLimit,xHighLimit);
+  }
+  for(int j=0; j< 17; j++){
+    filename = TString(Form("hh_mpair_ietaTTAbs_%d",j));
+    hh_mpair_ietaTTAbs[j] = new TH1F(filename,filename,nbinMax,xLowLimit,xHighLimit);
+  }
+  
   
   ////ieta of each SM
   TH1F *hh_mpair_ietaSM[38][85]; //// 36 for tb, 37 for others
@@ -368,9 +400,15 @@ void deriveCalibConst(int test_dataflag,int test_pizEta, int test_calibStep, int
 	for(int b=1; b<= nbinMax; b++){
 	  hhmpair->SetBinContent(b,nCounted[j][k][b-1]);
 	}
-	hh_mpair_ieta[j]->Add(hhmpair); ///this should be the same as hh_mpair1_ieta 
+	hh_mpair_ieta[j]->Add(hhmpair); 
 	hh_mpair_iphi[k]->Add(hhmpair);
 	
+	int itteta = j/5;
+        hh_mpair_ietaTT[itteta]->Add(hhmpair);
+        int ietaAbs = (abs(bx)-1)/5;
+        hh_mpair_ietaTTAbs[ietaAbs]->Add(hhmpair);
+	
+
 	int by = k;
         if( k== 0) by = 360;
 	
@@ -437,6 +475,28 @@ void deriveCalibConst(int test_dataflag,int test_pizEta, int test_calibStep, int
     
     cout<<"Average peak positions of all Ieta: "<< mean_allIeta << " TBSM "<< mean_allIetatb <<" OtherSM "<< mean_allIetaco <<endl;
     
+    
+    for(int k=0; k< 17 ; k++){
+      int bx = k+1;
+      if( hh_mpair_ietaTTAbs[k]->Integral()<1000) continue;
+      pi0_mfitpeak(hh_mpair_ietaTTAbs[k],pizFit,xlowFit,xhighFit,nPowFit,res,"","ietaTT");
+      for(int n=0; n<4; n++){
+        hh_res_ietaTTAbs[n]->SetBinContent(bx,res[2*n]);
+        hh_res_ietaTTAbs[n]->SetBinError(bx,res[2*n+1]);
+      }
+    }
+    for(int k=0; k< 34 ; k++){
+      int bx = k+1;
+      if( hh_mpair_ietaTT[k]->Integral()<1000) continue;
+      pi0_mfitpeak(hh_mpair_ietaTT[k],pizFit,xlowFit,xhighFit,nPowFit,res,"","ietaTT");
+      for(int n=0; n<4; n++){
+        hh_res_ietaTT[n]->SetBinContent(bx,res[2*n]);
+        hh_res_ietaTT[n]->SetBinError(bx,res[2*n+1]);
+      }
+    }
+    
+
+
     double meanIetaSM[38]={0};
 
     cout<<"fitting peak of each ieta in each SM" <<endl; 

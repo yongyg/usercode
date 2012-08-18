@@ -48,6 +48,8 @@ float C0[2][101][101];
 #include "../Common/variables.h"
 #include "../Common/utils.cc"
 #include "../Common/PositionCalc.cc"
+#include "../Common/getGoodLS.cc"
+
 #include "foldEndcap.cc"
 
 #include "setBranchAddress.cc"
@@ -248,7 +250,15 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
   filename = TString(Form("testCalibv1.dflag%d.pe%d.step%d.iter%d.r%d.txt",dataflag,pizEta, stepc,iter ,evtRange));
   txtout.open(filename,ios::out);
   
+  TH1F *hh_mpair_etaRing[2][40];
+  for(int k=0; k<2; k++){
+    for(int j=0; j< kEndcEtaRings; j++){
+      filename = TString(Form("hh_mpair_etaRing_%d_%d",k,j));
+      hh_mpair_etaRing[k][j] = new TH1F(filename,filename,nbinMax,xLowLimit,xHighLimit);
+    }
+  }
   
+
   float res[10];
   
   
@@ -271,11 +281,38 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
   cout<<"mean_sigma_side: "<<mean_side[0]<<" "<< mean_side[1] <<" "<< sigma_side[0]<<" "<< sigma_side[1]<< " mean " << meanMass <<endl; 
   
   int nEventsCount = 0;
-  
+
+
+  ///every time when run the code please check if you have the updated file 
+  vector<string> certfiles;
+  string certfile = string(workingDirectory) + string("/ecalGoodesGoodLumiBlocks.txt");
+  certfiles.push_back(certfile);
+  getLSrangeofEachRuns(certfiles);
+  int curLumiBlock = -1;
+  int curRun = -1;
+  bool goodCurLumiBlock = false;
+
+
   for(entry = start_entry; entry <= end_entry; entry++){
     fChain->GetEntry(entry);
     nEventsCount ++; 
   
+    
+    vector<int>::iterator it = find(goodRunList.begin(),goodRunList.end(),runNumber);
+    if( it == goodRunList.end()){
+      continue;
+    }
+    if( curLumiBlock != lumiBlock || curRun != runNumber){ /// a new lumiBlock  or starting of a new Run                  
+      curLumiBlock = lumiBlock;
+      curRun =  runNumber;
+      goodCurLumiBlock = checkLumiBlockofRun();  //check this lumiBlock                                                   
+    }
+    if( ! goodCurLumiBlock) continue;
+    
+
+
+
+
     if(entry % 100000==0) cout<<"entry: "<<entry<<" "<<mpair<<endl; 
     int ieta1 = ietaXtalClus1[0];
     int ieta2 = ietaXtalClus2[0];
@@ -310,6 +347,12 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
       nCountedEE[izz1][ieta1][iphi1][bin] ++; 
       nCountedEE[izz2][ieta2][iphi2][bin] ++; 
     }
+    
+    int ietaring1 = iRingEndCap(izXtalClus1,ietaXtalClus1[0],iphiXtalClus1[0]);
+    int ietaring2 = iRingEndCap(izXtalClus2,ietaXtalClus2[0],iphiXtalClus2[0]);
+    hh_mpair_etaRing[izz1][ietaring1]->Fill(mpair_new);
+    hh_mpair_etaRing[izz2][ietaring2]->Fill(mpair_new);
+    
     
     
     int izside = izXtalClus1 <0 ? 0: 1;

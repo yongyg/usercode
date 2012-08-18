@@ -295,6 +295,43 @@ void deriveCalibConst(int test_dataflag,int test_pizEta, int test_calibStep, int
   }
   
   if(stepc==2){
+
+
+    for(int n=1; n<= nEventRange; n++){
+      filename = TString("calibres/testCalibv1.") + filenamepart + TString(Form(".r%d.root",n));
+      checkfilename = TString("ls calibres/testCalibv1.") + filenamepart + TString(Form(".r%d.root",n));
+      if( gSystem->Exec(checkfilename)!=0){
+	cout<<"not found."<<endl;
+      exit(1);
+      }
+      TFile *fff = new TFile(filename,"read");
+      for(int j=0; j<2; j++){
+	for(int k=0; k<=nMaxRingIC; k++){
+	  filename = TString(Form("hh_mpair_etaRing_%d_%d",j,k));
+	  TH1F *hhtmp = (TH1F*)fff->Get(filename);
+	  if(hhtmp!=NULL){
+	    hh_mpair_etaRing[j][k]->Add(hhtmp);
+	  }
+	}
+      }
+      fff->Close();
+    }
+    for(int iz=0; iz<2; iz++){
+      for(int j=0; j< kEndcEtaRings; j++){
+	if( hh_mpair_etaRing[iz][j]->Integral()<1000) continue; 
+	if(pizEta==1 && j<= nMaxRingIC ){ ////above 20 no calibration from pi0s 
+	  pi0_mfitpeak(hh_mpair_etaRing[iz][j],pizFit,xlowFit,xhighFit,nPowFit,res,"","ieta");
+	}else if(pizEta==2 && j<= nMaxRingIC){
+	  pi0_mfitpeak(hh_mpair_etaRing[iz][j],pizFit,xlowFit,xhighFit,nPowFit,res,"","ieta");
+	}
+	for(int k=0; k<4;k++){
+	  hh_res_ieta[iz][k]->SetBinContent(j+1,res[2*k]);
+	  hh_res_ieta[iz][k]->SetBinError(j+1,res[2*k+1]);
+	}
+      }      
+    }
+    
+
     //printout the IC     
     for(int iz=0; iz<2; iz++){
       for(int j=0; j<101; j++){

@@ -55,6 +55,7 @@ float C0[170][360];
 #include "../Common/variables.h"
 #include "../Common/utils.cc"
 #include "../Common/PositionCalc.cc"
+#include "../Common/getGoodLS.cc"
 
 #include "setBranchAddress.cc"
 
@@ -206,6 +207,17 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
 
   ///end_entry = 100000;
 
+
+  ///every time when run the code please check if you have the updated file 
+  vector<string> certfiles;
+  string certfile = string(workingDirectory) + string("ecalGoodLumiBlocks.txt");
+  getLSrangeofEachRuns(certfiles);
+  int curLumiBlock = -1;
+  int curRun = -1;
+  bool goodCurLumiBlock = false;
+  
+
+
   for(entry = start_entry; entry <= end_entry; entry++){
 
     if(entry%100000==0) cout<<"entry " << entry <<endl; 
@@ -213,6 +225,21 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
     
     fChain->GetEntry(entry);
     nEventsCount ++; 
+
+    
+    vector<int>::iterator it = find(goodRunList.begin(),goodRunList.end(),runNumber);
+    if( it == goodRunList.end()){
+      continue;
+    }
+    if( curLumiBlock != lumiBlock || curRun != runNumber){ /// a new lumiBlock  or starting of a new Run                  
+      curLumiBlock = lumiBlock;
+      curRun =  runNumber;
+      goodCurLumiBlock = checkLumiBlockofRun();  //check this lumiBlock                                                   
+    }
+    if( ! goodCurLumiBlock) continue;
+    
+
+
 
     int ieta1 = ietaXtalClus1[0];
     int iphi1 = iphiXtalClus1[0];
