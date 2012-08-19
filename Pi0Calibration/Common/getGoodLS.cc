@@ -27,8 +27,12 @@ void getLSrangeofEachRuns(vector<string> certfiles){
     
     cout<<"certfile: "<< certfiles[n].c_str() <<endl; 
     ifstream txtin(certfiles[n].c_str(),ios::in);
-
+    if (txtin.fail()) {
+      cout<<" file can not be opened!" <<endl; 
+      exit(1);
+    }
     
+
     while( txtin.good()){
       
       char buf[MAX_CHARS_PER_LINE];

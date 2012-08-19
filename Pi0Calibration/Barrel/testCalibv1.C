@@ -210,7 +210,8 @@ void testCalibv1(int test_dataflag,int test_pizEta, int test_calibStep, int test
 
   ///every time when run the code please check if you have the updated file 
   vector<string> certfiles;
-  string certfile = string(workingDirectory) + string("ecalGoodLumiBlocks.txt");
+  string certfile = string(workingDirectory) + string("/ecalGoodLumiBlocks.txt");
+  certfiles.push_back(certfile);
   getLSrangeofEachRuns(certfiles);
   int curLumiBlock = -1;
   int curRun = -1;
