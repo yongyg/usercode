@@ -246,7 +246,7 @@ vector<int> L1bitsTechUsed;
 vector<int> L1bitsNotUsed; 
 vector<int> L1bitsTechNotUsed; 
 
-ofstream txtout; 
+
 int useRecVtxforReco ;
 int vetoRunList;
 int evtNotUse;

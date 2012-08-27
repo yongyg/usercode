@@ -34,7 +34,6 @@ void effSigma(TH1 * hist,double res[])
     cout << "effsigma: Not a valid histo. bwid = " << bwid << endl;
     return ; 
   }
-  Double_t xmax = xaxis->GetXmax();
   Double_t xmin = xaxis->GetXmin();
   Double_t ave = hist->GetMean();
   Double_t rms = hist->GetRMS();
@@ -62,7 +61,6 @@ void effSigma(TH1 * hist,double res[])
   int binlow = 1; 
   int binhigh = nb; 
   
-  double mean_min = ave; 
   
   int binlow2 = 1; 
   int binhigh2 = nb; 
