@@ -138,9 +138,19 @@ void checkHowManyDeadCrystalNext(int iz, int j, int k, int flagmap_ietaiphi[2][1
     }
   }
   
-  
+  else if(nbad == 6){
+    if( ncorner ==4 && nside ==2  ) {
+      nflagdeadNextTo = 19;
+    }
+    
+    else{
+      cout<<"? " << nbad <<" "<< nside <<" "<< ncorner <<endl; 
+    }
+    
+  }
+
   else{
-    cout<<"nbad? "<< nbad <<" "<< iz <<" "<< j<<" "<<k<<endl; 
+    cout<<"nbad? "<< nbad <<" "<< iz <<" "<< j<<" "<<k<<" "<< ncorner <<" "<< nside <<endl; 
     exit(1); 
   }
   
@@ -156,11 +166,28 @@ void make_deadflagEE(char *inputfile, int dataflag ){
       }
     }
   }
+  get_xyzEBrechits();
+  setEtaRingBoundaryEndcap();
   
+  
+
   readInterCalibEndcap_GR09_V8();
   
   ifstream txtin(inputfile,ios::in);
   
+  string sinput = inputfile; 
+
+  int pizEta = 1;
+  if( sinput.find("pe2") != string::npos){
+    pizEta = 2; 
+  }
+
+
+  cout<<"pizEta " << pizEta <<endl; 
+  int nMaxRingIC = 20; 
+  if( pizEta==2){
+    nMaxRingIC = 30; 
+  }
   
   
   int iz; 
@@ -171,12 +198,18 @@ void make_deadflagEE(char *inputfile, int dataflag ){
   int flagEE[2][101][101];
   while (txtin.good()){
     txtin>> iz >> ix >> iy >> cc; 
+    
     flag = cc <0 ;   //-1 means dead xtal 
+    
+    int iring = iRingEndCap(2*iz-1,ix,iy); ///input -1/1,  
+    
+    ///if(iring > nMaxRingIC ) flag = 0; //always good for those rings...
+    
     flagEE[iz][ix][iy]= flag; 
   }
   
   
-  TString output = TString(Form("deadflag/crystal_deadflag_ee_dflag%d.txt",dataflag));
+  TString output = TString(Form("crystal_deadflag_ee_dflag%d.txt",dataflag));
   cout<<output<<endl; 
   ofstream txtout(output,ios::out);
   

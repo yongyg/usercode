@@ -8,10 +8,13 @@ TRandom3 *rgen_;
 
 #include "usefullcode.cc"
 
-float ccalib_GR_42_V13[2][101][101];
+
+
+float ccalibpretag[2][101][101];
 
 float interCalib_preCalib[170][360];
 float interCalibEndcap_preCalib[2][101][101];
+
 
 
 bool isTestBeamSM(int iSM){
@@ -78,7 +81,8 @@ float icwt_period[25][2][101][101];  ///pi0&eta combined of each period
 
 
 void combinCalibConstantEndcapv1(){
-  
+
+
   cout.setf(ios::fixed,ios::floatfield);
   cout.precision(8);
   
@@ -94,46 +98,24 @@ void combinCalibConstantEndcapv1(){
   
   readInterCalibEndcap_GR09_V8();
 
-  
-  getInterCalibEndcapv1("interCalibEE_GR_R_42_V13.txt",ccalib_GR_42_V13); ///2010 IC
-  
+  getInterCalibEndcapv1("interCalibEE_GR_P_V39.txt",ccalibpretag);
   
   
   get_xyzEBrechits();
   setEtaRingBoundaryEndcap();
   
-  
-  
   map<int,string> icFiles; 
   
   
-  //// datachain_alcapizEE_data_20111122_158851_180363_160404to166923and166946to167913floatAlphav1
-  //// datachain_alcapizEE_data_20111122_158851_180363_169985to173692floatAlphav1
-  ///  datachain_floatAlphav1_175832to180252_piz
+  icFiles[0] = "calibres/deriveCalibConst.dflag2.pe1.step2.iter50.txt";
+  icFiles[1] = "calibres/deriveCalibConst.dflag3.pe2.step2.iter50.txt";
   
-  icFiles[0] = "calibres/deriveCalibConst.testCalibv1e.dflag41.pe1.cut3.rmOvlap0.step24.method2.corrEta1.corrPhi0.corrDead0.precalib1.vtx1.encorr0.evtNot-1.trig0.es1.txt";
-  icFiles[1] = "calibres/deriveCalibConst.testCalibv1e.dflag42.pe1.cut3.rmOvlap0.step30.method2.corrEta1.corrPhi0.corrDead0.precalib1.vtx1.encorr0.evtNot-1.trig0.es1.txt";
-  icFiles[2] = "calibres/deriveCalibConst.testCalibv1e.dflag45.pe1.cut3.rmOvlap0.step25.method2.corrEta1.corrPhi0.corrDead0.precalib1.vtx1.encorr0.evtNot-1.trig0.es1.txt";
+  int nIC = 1; 
   
-  
-  icFiles[3] = "calibres/deriveCalibConst.testCalibv1e.dflag124.pe2.cut1.rmOvlap0.step30.method2.corrEta1.corrPhi0.corrDead0.precalib1.vtx1.encorr0.evtNot-1.trig0.es1.txt";
-  icFiles[4] = "calibres/deriveCalibConst.testCalibv1e.dflag122.pe2.cut1.rmOvlap0.step40.method2.corrEta1.corrPhi0.corrDead0.precalib1.vtx1.encorr0.evtNot-1.trig0.es1.txt";
-  icFiles[5] = "calibres/deriveCalibConst.testCalibv1e.dflag125.pe2.cut3.rmOvlap0.step35.method2.corrEta1.corrPhi0.corrDead0.precalib1.vtx1.encorr0.evtNot-1.trig0.es1.txt";
-  
-  int nIC = 3; 
+  getCrystaldeadflagEndcap_v1("deadflag/crystal_deadflag_ee_dflag2.txt",ndeadflag_ic[0]);
+  getCrystaldeadflagEndcap_v1("deadflag/crystal_deadflag_ee_dflag3.txt",ndeadflag_ic[1]);
   
   
-  getCrystaldeadflagEndcap_v1("deadflag/crystal_deadflag_ee_dflag41.txt",ndeadflag_ic[0]);
-  getCrystaldeadflagEndcap_v1("deadflag/crystal_deadflag_ee_dflag42.txt",ndeadflag_ic[1]);
-  getCrystaldeadflagEndcap_v1("deadflag/crystal_deadflag_ee_dflag45.txt",ndeadflag_ic[2]);
-  
-  
-  getCrystaldeadflagEndcap_v1("deadflag/crystal_deadflag_ee_dflag124.txt",ndeadflag_ic[3]);
-  getCrystaldeadflagEndcap_v1("deadflag/crystal_deadflag_ee_dflag122.txt",ndeadflag_ic[4]);
-  getCrystaldeadflagEndcap_v1("deadflag/crystal_deadflag_ee_dflag125.txt",ndeadflag_ic[5]);
-  
-  
-
   int nConstantSet = int(icFiles.size());
   
   if( nConstantSet >50){
@@ -147,6 +129,7 @@ void combinCalibConstantEndcapv1(){
     
   TFile *fnew = new TFile("combineCalibConstantEndcapv1.root","recreate");
   
+    
 
   TH1F *hh_cc_ietaring[50][3][40]; //file,ee-/ee+/both, ring, 
   TH1F *hh_res_cc_ietaring[50][3][3];
@@ -257,10 +240,10 @@ void combinCalibConstantEndcapv1(){
   
   
   
-  TH1F *hh_c_deadflag[51][20]; 
-  TH1F *hh_c_deadflag_period[51][20]; 
+  TH1F *hh_c_deadflag[51][30]; 
+  TH1F *hh_c_deadflag_period[51][30]; 
   for(int j=0; j< nConstantSet+1; j++){
-    for(int k=0; k<20; k++){
+    for(int k=0; k<30; k++){
       TString histname = TString(Form("hh_c_deadflag_%d_%d",j,k));
       hh_c_deadflag[j][k] = new TH1F(histname,histname,500,0,2);
 
@@ -272,20 +255,14 @@ void combinCalibConstantEndcapv1(){
   
   
   
-  TH1F *hh_c_check[51][20]; 
-  for(int j=0; j< nConstantSet+1; j++){
-    for(int k=0; k<20; k++){
-      TString histname = TString(Form("hh_c_check_%d_%d",j,k));
-      hh_c_check[j][k] = new TH1F(histname,histname,500,0,2);
-    }
-  }
-  
 
   ofstream txtoutcheck("combineCalibConstantEndcapv1.txt",ios::out);
     
   
   for(int n=0; n< nConstantSet; n++){
     string  filename = icFiles[n];
+
+
     getInterCalibEndcap(filename.c_str(),cc);
 
 
@@ -299,11 +276,24 @@ void combinCalibConstantEndcapv1(){
       for(int j=0; j<101; j++){
 	for(int k=0; k< 101; k++){
 	  ic[n][iz][j][k] = cc[iz][j][k];
+
+	  if( ndeadflag_ic[n][iz][j][k] < 0  && ic[n][iz][j][k] >0){
+	    cout<<"warning (can be ignored) dead crystal  " <<ic[n][iz][j][k] <<endl; 
+	    ic[n][iz][j][k] = -1; 
+	  }
+	  
 	}
       }
     }
+    
+    
+    
   }
   
+
+  cout<<" nConstantSet " << nConstantSet <<endl; 
+  
+
   for(int n=0; n< nConstantSet; n++){
     
      for(int iz=0; iz<2; iz++){
@@ -313,6 +303,7 @@ void combinCalibConstantEndcapv1(){
 	  if( validRecHitEndCap[iz][j][k] <1) {
 	    continue; 
 	  }
+	  
 	  int iring = iRingEndCap(2*iz-1,j,k); ///input -1/1,  
 	  float c = ic[n][iz][j][k];
 	  if(c >0){
@@ -345,8 +336,6 @@ void combinCalibConstantEndcapv1(){
 	      hh2_diff_cc[n][m][iz]->SetBinContent(j,k,c1-c2);
 	      hh_diff_cc_ietaring[n][m][iz][iring]->Fill( (c1 -c2)/(0.5*(c1+c2)));
 	      hh_diff_cc_ietaring[n][m][2][iring]->Fill( (c1 -c2)/(0.5*(c1+c2)));
-	      //hh_diff_cc_ietaring[n][m][2][iring]->Fill( (c1 -c2));
-	      
 	      
 	    }else{
 	      hh2_diff_cc[n][m][iz]->SetBinContent(j,k,-1);
@@ -399,12 +388,9 @@ void combinCalibConstantEndcapv1(){
     }
   }
   
-  //float sigmaTB = 2.5; ///precision of precalib+LC
-  //float sigmaTB = 3; ///precision of precalib+LC
   
-  
-  //Please note that this number is not precise at all. 
-  float sigmaTB = 2; ///precision of precalib+LC 
+
+  float sigmaSys = 2; ///precision of precalib+LC 
   
   
   cout<<"combine " <<endl; 
@@ -436,11 +422,8 @@ void combinCalibConstantEndcapv1(){
 
 
 	  float sigma = hh_res_cc_ietaring[n][2][2]->GetBinContent(iring+1);
-	  //float sigma = hh_res_cc_ietaring[n][iz][2]->GetBinContent(iring+1);
-	  	  
-	  if( sigma > sigmaTB){
-	    sigma = sqrt( sigma * sigma - sigmaTB * sigmaTB);
-	  }
+	  sigma = sqrt( sigma * sigma + sigmaSys * sigmaSys);
+	  
 	  if( c > 0){
 	    float tmp1 = c/ ( sigma * sigma);
 	    float tmp2 = 1/(sigma * sigma);
@@ -453,16 +436,16 @@ void combinCalibConstantEndcapv1(){
 	    wtSumS_period[nperiod] += tmp2; 
 	    
 	    int deadflag = ndeadflag_ic[n][iz][j][k];
-	    hh_c_deadflag[n][deadflag]->Fill( c);
-	    
-	    if( iz == 0 && j>= 50 && j<=56 && k>= 25 && k<=31){
-	      hh_c_check[n][0]->Fill(c);
+	    if(deadflag>=0){
+	      hh_c_deadflag[n][deadflag]->Fill( c);
 	    }
+
 	  }
 	}
 	
 	if( wtSumC > 0){
 	  icwt[iz][j][k] = wtSumC / wtSumS; 
+
 
 	  hh_ccwtavg_ietaring[iz][iring] ->Fill( icwt[iz][j][k] );
 	  hh_ccwtavg_ietaring[2][iring] ->Fill( icwt[iz][j][k] );
@@ -521,7 +504,7 @@ void combinCalibConstantEndcapv1(){
     string filename = string(Form("interCalibConstants.combinedPi0EtaPeriod%d.EcalEndcap.txt",j));
     txtout_period[j].open(filename.c_str(),ios::out);
   }
-    
+  
   
   cout<<"print out final " <<endl; 
   for(int iz=0; iz<2; iz++){
@@ -535,35 +518,31 @@ void combinCalibConstantEndcapv1(){
 	for(int n=0; n< nIC; n++){ ///for each period
 	  
 	  float sigmaC = hh_res_ccwtavg_ietaring_period[n][2][2]->GetBinContent(iring+1);
-	  //float sigmaC = hh_res_ccwtavg_ietaring_period[n][iz][2]->GetBinContent(iring+1); 
-	  	  
-	  float cErr = sigmaTB; 
-	  if( sigmaC > sigmaTB ){
-	    cErr = sqrt( sigmaC *sigmaC - sigmaTB * sigmaTB);
-	  }
+	  
+	  float cErr = sqrt( sigmaC *sigmaC + sigmaSys * sigmaSys);
 	  cErr /=100;
 	  
 	  float c = icwt_period[n][iz][j][k];
 	  if( c >0){
 	    
-	    int deadflag = ndeadflag_ic[n][iz][j][k];
-	    if(deadflag<0){
-	      cout<<"wrong deadflag ! " << n <<endl; 
-	      exit(1);
+	    int deadflag1 = ndeadflag_ic[n%nIC][iz][j][k];
+	    int deadflag2 = ndeadflag_ic[nIC+n%nIC][iz][j][k];
+	    if(deadflag1<0 && deadflag2<0){
+	      cout<<"wrong deadflag ! " << n << " "<<iz <<" "<< j<<" "<<k <<endl; 
+	      return; 
 	    }
-	    hh_c_deadflag_period[n][deadflag]->Fill( c);
-	    if(deadflag>0){
+	    if(deadflag1>0 ){
+	      hh_c_deadflag_period[n][deadflag1]->Fill( c);
 	      hh_c_deadflag_period[n][19]->Fill( c);
 	    }
+	    
 	  }
 	  
 	  if( c > 0){
-	    txtout_period[n]<<j<<" "<<k<<" "<< 2*iz-1<<" "<< c*ccalib_GR_42_V13[iz][j][k]<<" "<< cErr * c*ccalib_GR_42_V13[iz][j][k] <<endl; 
-	    //txtout_period[n]<<2*iz-1<<" "<< j<<" "<<k<<" "<< c * ccalib_GR_42_V13[iz][j][k] <<endl; 
+	    txtout_period[n]<<j<<" "<<k<<" "<< 2*iz-1<<" "<< c*ccalibpretag[iz][j][k]<<" "<< cErr * c*ccalibpretag[iz][j][k] <<endl; 
 	    
 	  }else{	
 	    txtout_period[n]<<j<<" "<<k<<" "<< 2*iz-1<<" "<<-1 <<" "<< 999 <<endl; 
-	    //txtout_period[n]<<2*iz-1<<" "<< j<<" "<<k<<" "<< ccalib_GR_42_V13[iz][j][k] <<endl; 
 	  }
 	}
 	
@@ -573,17 +552,11 @@ void combinCalibConstantEndcapv1(){
 	  hh2_cc_xy[nConstantSet][iz]->SetBinContent(j,k,c);
 	  
 	  float sigmaC = hh_res_ccwtavg_ietaring[2][2]->GetBinContent(iring+1);
-	  //float sigmaC = hh_res_ccwtavg_ietaring[iz][2]->GetBinContent(iring+1);
 	  
-	  float cErr = sigmaTB; 
-	  if( sigmaC > sigmaTB ){
-	    cErr = sqrt( sigmaC *sigmaC - sigmaTB * sigmaTB);
-	  }
+	  float cErr = sqrt( sigmaC *sigmaC + sigmaSys * sigmaSys);
 	  cErr /=100;
-	  //txtout<<2*iz-1<<" "<< j<<" "<<k<<" "<< c * ccalib_GR_42_V13[iz][j][k] <<endl; 
-	  txtout<<j<<" "<<k<<" "<< 2*iz-1<<" "<< c * ccalib_GR_42_V13[iz][j][k] <<" "<< cErr * c * ccalib_GR_42_V13[iz][j][k] <<endl; 
+	  txtout<<j<<" "<<k<<" "<< 2*iz-1<<" "<< c * ccalibpretag[iz][j][k] <<" "<< cErr * c * ccalibpretag[iz][j][k] <<endl; 
 	}else{
-	  //txtout<<2*iz-1<<" "<< j<<" "<<k<<" "<< ccalib_GR_42_V13[iz][j][k] <<endl;
 	  txtout<<j<<" "<<k<<" "<< 2*iz-1<<" "<<-1 <<" "<< 999 <<endl; 
 	}
       }
@@ -595,5 +568,5 @@ void combinCalibConstantEndcapv1(){
   fnew->Close();
   
   
-
+  
 }
