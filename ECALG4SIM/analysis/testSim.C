@@ -181,6 +181,7 @@ void testSim(){
   
   cout<<"N " << N <<endl; 
 
+  //  N = 1;
   for(entry =0; entry< N; entry++){    
 
     if(entry%10==0) cout<<"entry "<< entry <<endl; 
@@ -193,6 +194,7 @@ void testSim(){
       float egen = ptGenPht[j]/sin(2*atan(exp(-etaGenPht[j])));
       
       vector<int> vj2 = get5x5CrystalStep(etaGenPht[j],phiGenPht[j],vxGenPht[j],vyGenPht[j],vzGenPht[j]);
+
       
       if(vj2.size()<1) continue; 
       double pretmin[25];
@@ -249,16 +251,15 @@ void testSim(){
 	      }
 	    }
 	  }
-	  
+	
+
+  
 	  if(ietag4EB[jmax]==8 && iphig4EB[jmax]==9) {
 	    
 	    int ind = ind_pretmin[jj];
 	    double pos[3] = {posx[ind]/10,posy[ind]/10,posz[ind]/10};
 	    double pre[3] = {prex[ind]/10,prey[ind]/10,prez[ind]/10};
 	    distPreStepPointAllSides(pos, pre, ieta, iphi,res,0,1);
-	    double ddmin = res[0];
-	    fillTH1F("ddpremin_0",ddmin);
-	    
 	    
 	    distplane = res[0];
 	    indplane = int(res[1]+0.1);

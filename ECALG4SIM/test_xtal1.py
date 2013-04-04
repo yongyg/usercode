@@ -21,16 +21,9 @@ process.load('Configuration.StandardSequences.Generator_cff')
 #process.load('IOMC.EventVertexGenerators.VtxSmearedRealistic8TeVCollision_cfi')
 process.load('IOMC.EventVertexGenerators.VtxSmearedGauss_cfi')
 
-process.VtxSmeared.GaussVtxSmearingParameters = cms.PSet(
-	    MeanX = cms.double(0.0),
-	    MeanY = cms.double(0.0),
-	    MeanZ = cms.double(0.0),
-	    SigmaY = cms.double(0.0),
-	    SigmaX = cms.double(0.0),
-	    SigmaZ = cms.double(0.0),
-	    TimeOffset = cms.double(0.0)
-	    )
-
+process.VtxSmeared.SigmaY = 0
+process.VtxSmeared.SigmaX = 0
+process.VtxSmeared.SigmaZ = 0
 
 
 process.load('GeneratorInterface.Core.genFilterSummary_cff')
