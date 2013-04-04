@@ -366,10 +366,11 @@ vector<int> get5x5CrystalSim(float geta,float gphi,float vx,float vy,float vz){
   ////EB;-85,85  , 360 ;  ieta*360+iphi
   /// EE: 100*100;  iz*(100000 + ix * iy)
   
-  float etag = ecalEta(geta,vz,sqrt(vx*vx+vy+vy));
+  
+  float etag = ecalEta(geta,vz,sqrt(vx*vx+vy*vy));
   float phig = ecalPhi(gphi,vx,vy);
   
-  if(debug) cout<<" eta/phi " << geta<<" "<<gphi<<" ecal "<<etag <<" "<<phig<<" "<<vz<<" e "<< ptGenPht[0]/sin(2*atan(exp(-geta)))<<endl;
+  if(debug) cout<<" eta/phi " << geta<<" "<<gphi<<" ecal "<<etag <<" "<<phig<<" v "<<vx<<" "<<vy<<" "<<vz<<" e "<< ptGenPht[0]/sin(2*atan(exp(-geta)))<<endl;
   
   vector<int> vj; 
   if( fabs(etag)<1.5){
@@ -467,10 +468,10 @@ vector<int> get5x5CrystalStep(float geta,float gphi,float vx,float vy,float vz){
   ////EB;-85,85  , 360 ;  ieta*360+iphi
   /// EE: 100*100;  iz*(100000 + ix * iy)
   
-  float etag = ecalEta(geta,vz,sqrt(vx*vx+vy+vy));
+  float etag = ecalEta(geta,vz,sqrt(vx*vx+vy*vy));
   float phig = ecalPhi(gphi,vx,vy);
   
-  if(debug) cout<<" eta/phi " << geta<<" "<<gphi<<" ecal "<<etag <<" "<<phig<<" "<<vz<<" e "<< ptGenPht[0]/sin(2*atan(exp(-geta)))<<endl;
+  if(debug) cout<<" eta/phi " << geta<<" "<<gphi<<" ecal "<<etag <<" "<<phig<<" v "<<vx<<" "<<vy<<" "<<vz<<" e "<< ptGenPht[0]/sin(2*atan(exp(-geta)))<<endl;
   
   vector<int> vj; 
   if( fabs(etag)<1.5){
