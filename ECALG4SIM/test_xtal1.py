@@ -21,6 +21,18 @@ process.load('Configuration.StandardSequences.Generator_cff')
 #process.load('IOMC.EventVertexGenerators.VtxSmearedRealistic8TeVCollision_cfi')
 process.load('IOMC.EventVertexGenerators.VtxSmearedGauss_cfi')
 
+process.VtxSmeared.GaussVtxSmearingParameters = cms.PSet(
+	    MeanX = cms.double(0.0),
+	    MeanY = cms.double(0.0),
+	    MeanZ = cms.double(0.0),
+	    SigmaY = cms.double(0.0),
+	    SigmaX = cms.double(0.0),
+	    SigmaZ = cms.double(0.0),
+	    TimeOffset = cms.double(0.0)
+	    )
+
+
+
 process.load('GeneratorInterface.Core.genFilterSummary_cff')
 process.load('Configuration.StandardSequences.SimIdeal_cff')
 process.load('Configuration.StandardSequences.Digi_cff')
@@ -47,7 +59,7 @@ process.options = cms.untracked.PSet(
 process.configurationMetadata = cms.untracked.PSet(
     version = cms.untracked.string('\\$Revision: 1.1 $'),
     annotation = cms.untracked.string('Summer2012 sample with GUN: Flat random DiKaon gun, E = 1 .. 100 GeV, no tune'),
-    name = cms.untracked.string('\\$Source: /local/reps/CMSSW/CMSSW/Configuration/GenProduction/python/EightTeV/DiKaon_E_1to100_gun_cff.py,v $')
+    name = cms.untracked.string('\\$Source: /local/reps/CMSSW/UserCode/yangyong/ECALG4SIM/test_xtal1.py,v $')
 )
 
 # Output definition
